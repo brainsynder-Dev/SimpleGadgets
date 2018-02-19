@@ -11,7 +11,6 @@ import simple.brainsynder.nms.IActionMessage;
 import simple.brainsynder.sound.SoundMaker;
 import simple.brainsynder.utils.Reflection;
 
-import java.util.HashSet;
 import java.util.Random;
 
 public class Gadget_Paintsprayer extends Gadget {
@@ -28,7 +27,7 @@ public class Gadget_Paintsprayer extends Gadget {
     @Override
     public void run(final Player p) {
         int target_distance = Core.getLanguage().getInt("Gadgets." + getIdName() + ".Target-Block-Distance");
-        Block block = p.getTargetBlock((HashSet<Byte>) null, target_distance);
+        Block block = p.getTargetBlock(null, target_distance);
         if (block.isLiquid()) {
             Cooldown.removeCooldown(p);
             IActionMessage message = Reflection.getActionMessage();
