@@ -1,0 +1,25 @@
+#  ╔═══╗──────╔╗───╔═══╗────╔╗──────╔╗
+#  ║╔═╗║──────║║───║╔═╗║────║║─────╔╝╚╗
+#  ║╚══╦╦╗╔╦══╣║╔══╣║─╚╬══╦═╝╠══╦══╬╗╔╬══╗
+#  ╚══╗╠╣╚╝║╔╗║║║║═╣║╔═╣╔╗║╔╗║╔╗║║═╣║║║══╣
+#  ║╚═╝║║║║║╚╝║╚╣║═╣╚╩═║╔╗║╚╝║╚╝║║═╣║╚╬══║
+#  ╚═══╩╩╩╩╣╔═╩═╩══╩═══╩╝╚╩══╩═╗╠══╝╚═╩══╝
+#  ────────║║────────────────╔═╝║
+#  ────────╚╝────────────────╚══╝
+#
+# Developed by: brainsynder
+# Spigot download link: https://www.spigotmc.org/resources/22728/
+# Current version: 1.4
+#
+# The permission per gadget is customizable by you. To change/get the permission simply open the "Language.yml"
+# Look for the gadget you want to change/get and look for the "Permission" line and that is the custom permission
+# The permission is setup like this: "SimpleGadgets.CUSTOM-PERMISSION" and simple replace the "CUSTOM-PERMISSION"
+# with the custom permission in the "Language.yml"
+# ================================================================================================================== #
+
+Permission-List:
+- "SimpleGadgets.command.reload" # Allows the reloading of the gadgets menu (Mostly to update Gadgets that have been disabled).
+- "SimpleGadgets.command.version" # This is the permission to show the version stats of SimpleGadgets
+- "SimpleGadgets.command.gadgetsList" # This is the permission to show the list of gadgets via the command '/simplegadgets gadgetslist'
+- "SimpleGadgets.command.permissions" # This is the permission to show the gadgets permissions via the command '/simplegadgets permissions'
+- "SimpleGadgets.gadget.*" # This is the permission for ALL the gadgets

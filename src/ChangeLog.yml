@@ -1,0 +1,105 @@
+#  ╔═══╗──────╔╗───╔═══╗────╔╗──────╔╗
+#  ║╔═╗║──────║║───║╔═╗║────║║─────╔╝╚╗
+#  ║╚══╦╦╗╔╦══╣║╔══╣║─╚╬══╦═╝╠══╦══╬╗╔╬══╗
+#  ╚══╗╠╣╚╝║╔╗║║║║═╣║╔═╣╔╗║╔╗║╔╗║║═╣║║║══╣
+#  ║╚═╝║║║║║╚╝║╚╣║═╣╚╩═║╔╗║╚╝║╚╝║║═╣║╚╬══║
+#  ╚═══╩╩╩╩╣╔═╩═╩══╩═══╩╝╚╩══╩═╗╠══╝╚═╩══╝
+#  ────────║║────────────────╔═╝║
+#  ────────╚╝────────────────╚══╝
+#
+# Developed by: brainsynder
+# Version 0.1 developer api (How to make Gadgets) video: http://brainsynder.tk/SimpleGadgets/
+# Spigot download link: https://www.spigotmc.org/resources/simplegadgets.22728/
+# Current version: 1.3
+#
+# Note: I have a reason why you can't change the locations of the gadgets, and it because It will
+#   mess-up the page making (What allowes you to have infinate pages for infinate gadgets). I might
+#   make it so in the future you can change what gadgets are on certain pages, but that will be a later time.
+
+1.1:
+  Changed:
+  - "Removed ALL usages of ParticleAPI class and moved it to the ParticleMaker class"
+  - "Some small fixes (Should work with 1.10 now [I removed a check I had to see if it was 1.9/1.8])"
+
+1.0:
+  Added:
+    - New Gadget: "Particle Lazer"
+  Fixed:
+    - "Gadgets menu not having multi-pages Fixed in SimpleAPI version: 0.9"
+    - "commands: (/simplegadgets relaod) and  (/simplegadgets gadgetslist)"
+
+0.8:
+  Added:
+    - SimpleAPI support: "Plugin now requires SimpleAPI to work."
+    - 1.10 support:
+  Removed:
+    - AdvMap: "Now with SimpleAPI"
+    - GadgetPageMaker: "Now with SimpleAPI"
+    - SoundMaker: "Now with SimpleAPI"
+    - All nms classes: "and I mean all"
+
+0.7:
+  Added:
+    - New Gadgets:
+      - "Fall Scare (Halloween/October themed)"
+      - "Rocket"
+    - RGBItemTrailer Class: "ITrailer trailer = new RGBItemTrailer (...);"
+    - RGBProjectileTrailer Class: "ITrailer trailer = new RGBProjectileTrailer (...);"
+    - TitleMessenger Class (Version v1_8_R2 - v1_9_R2): "TitleMessenger.sendMessage (...);"
+    - Pathfinder Class (Version v1_8_R2 - v1_9_R2): "GoalManager.setEntityGoals (...);"
+  Changed:
+    - Renamed BroadcastMessage to ActionMessenger (Version v1_8_R2 - v1_9_R2): "ActionMessenger.sendMessage (...);"
+  Fixed:
+    - Block Replacing: "Effected replacing Flowerpots and more."
+
+0.6:
+  Added:
+  - New Gadgets:
+    - "Nature Wind"
+    - "Sheep Bomb"
+  - Version dependent code: "For clearing mob/entity pathfinder goals & ActionMessages"
+  - MathUtils: "Added so developers do not have to make their own math."
+
+
+0.5:
+  Fixed:
+  - BlockUtils: "Fixed it for 1.9 servers and lower (Forgot it had a v1_8_R3 import)"
+  - BatBlaster: "Spammed Console with NullPointerException Errors; Fixed now"
+
+0.4:
+  Added:
+    - New Gadgets:
+      - "NetherBlaze"
+      - "PaintSprayer"
+      - "PaintTrail"
+      - "FireBender"
+    - Version dependant Action messanger (Version v1_8_R2 - v1_9_R2): "BroadcastMessage.sendMessage (...);"
+    - "Needs-Permission configuration tag"
+  Fixed:
+  - When the WinterBreeze replaced a block that had a preasure plate on it: "That block will no longer be changed."
+
+0.3:
+  Added:
+    - "Permissions.yml to have a local copy of the permissions"
+    - New Gadgets:
+      - "QuakeGun"
+      - "WinterBreeze"
+    - Customizable permissions for gadgets: "SimpleGadgets.(...)"
+    - All gadgets perm: "SimpleGadgets.gadget.*"
+
+
+  Changed:
+    - "Gadget class a little;"
+    - "@Deprecated super(id, idName);"
+    - "ITrailer Classes;"
+      + Added: ItemTrailer class: "ITrailer trailer = new ItemTrailer (...);"
+      + Changed TrailerImpl to ProjectileTrailer: "ITrailer trailer = new ProjectileTrailer (...);"
+      + Removed method from the Trailer Interface: "void disable ()"
+
+0.2:
+  - "Added: Firework Gadget"
+  - "Added: MelonBlaster Gadget"
+  - "Added: WaterBomb Gadget"
+  - "Added: More commands"
+  - "Added: More configurations"
+  - "Added: 1.9.4 Support"

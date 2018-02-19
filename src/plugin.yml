@@ -1,0 +1,13 @@
+name: SimpleGadgets
+main: gadgets.brainsynder.Core
+version: 1.5
+depends: [SimpleAPI]
+loadbefore: [SimpleGadgets-Addon]
+authors: [brainsynder]
+commands:
+  gadgets:
+    description: Opens the gadgets menu.
+    aliases: [gadget, simplegadgets, simplegadget]
+  simplegadgets:
+    description: Main SimpleGadgets commands.
+    aliases: [simplegadget]
