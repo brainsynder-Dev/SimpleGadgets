@@ -5,6 +5,10 @@ import gadgets.brainsynder.api.gadget.Gadget;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+/**
+ * How to get an instance of User:
+ *      GadgetManager#getUser(Player)
+ */
 public class User {
     private Gadget gadget = null;
     private Player player;
@@ -34,14 +38,14 @@ public class User {
         if (hasGadget()) removeGadget();
 
         this.gadget = gadget;
-        player.getInventory().addItem(gadget.getItemStack());
+        player.getInventory().addItem(gadget.getItem().build());
         player.updateInventory();
     }
 
     public void removeGadget () {
         if (!hasGadget()) return;
-        if (player.getInventory().contains(gadget.getItemStack())) {
-            player.getInventory().remove(gadget.getItemStack());
+        if (player.getInventory().contains(gadget.getItem().build())) {
+            player.getInventory().remove(gadget.getItem().build());
             player.updateInventory();
         }
         gadget = null;

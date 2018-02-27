@@ -12,9 +12,9 @@ package gadgets.brainsynder.api.gadget;
 
 import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
+import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.files.JSONFile;
 import gadgets.brainsynder.utilities.ItemBuilder;
-import old.brainsynder.Gadgets.List.*;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -24,36 +24,6 @@ import org.bukkit.event.Listener;
 import java.io.File;
 
 public abstract class Gadget extends JSONFile {
-    public static final Gadget FUN_CANNON = new Gadget_FunCannon();
-    public static final Gadget BAT_BLASTER = new Gadget_BatBlaster();
-    public static final Gadget TRAIL_BLAZER = new Gadget_TrailBlazer();
-    public static final Gadget CONFETTI = new Gadget_Confetti();
-    public static final Gadget EXPLOSIVE_SNOWBALL = new Gadget_ExplosiveSnowball();
-    public static final Gadget WATER_BOMB = new Gadget_WaterBomb();
-    public static final Gadget FIREWORKS = new Gadget_Firework();
-    public static final Gadget MELON_BLASTER = new Gadget_MelonBlaster();
-    public static final Gadget QUAKE_GUN = new Gadget_QuakeGun();
-    public static final Gadget WINTER_BREEZE = new Gadget_WinterBreeze();
-    public static final Gadget NETHER_BLAZE = new Gadget_NetherBlaze();
-    public static final Gadget PAINT_SPRAYER = new Gadget_Paintsprayer();
-    public static final Gadget PAINT_TRAIL = new Gadget_PaintTrail();
-    public static final Gadget FIRE_BENDER = new Gadget_FireBender();
-    public static final Gadget NATURE_WIND = new Gadget_NatureWind();
-    public static final Gadget SHEEP_BOMB = new Gadget_SheepBomb();
-    public static final Gadget FALL_SCARE = new Gadget_FallScare();
-    public static final Gadget ROCKET = new Gadget_Rocket();
-    public static final Gadget PARTICLE_LAZER = new Gadget_Lazer();
-    public static final Gadget POOP_BOMB = new Gadget_PoopBomb();
-    public static final Gadget NINJA_VANISH = new Gadget_NinjaVanish();
-    public static final Gadget BIRTHDAY_CANNON = new Gadget_BirthdayCannon();
-    public static final Gadget BBQ_CANNON = new Gadget_BBQ();
-    public static final Gadget FREEZE_BOMB = new Gadget_FreezeBomb();
-    public static final Gadget STAR_BLAZING = new Gadget_StarBlazing();
-    public static final Gadget BANANA_CANNON = new Gadget_BananaCannon();
-    public static final Gadget GRAVITY_SURGE = new Gadget_GravitySurge();
-    public static final Gadget PANCAKE_CANNON = new Gadget_PancakeCannon();
-    public static final Gadget FIREWORK_CANNON = new Gadget_FireworkCannon();
-
     private String idName;
     private GadgetPlugin plugin;
     private String _PERMISSION_, _NAME_;
@@ -82,6 +52,9 @@ public abstract class Gadget extends JSONFile {
 
     public void loadExtraTags() {}
 
+    /**
+     * Does the player have permission to use this gadget?
+     */
     public boolean hasPermission(Player player) {
         if (!Core.getLanguage().getBoolean("Needs-Permission"))
             return true;
@@ -104,16 +77,57 @@ public abstract class Gadget extends JSONFile {
         return _COOLDOWN_;
     }
 
-    public void run(Player player) {}
-    public void onBlockClick(Player player, Block block) {
+    /**
+     * This method is run when the player RightClicks their gadget item
+     *
+     * @param player
+     *      The players' User instance
+     */
+    public void run(User player) {}
+
+    /**
+     * This method is run when the player Right Clicks a block with their gadget item
+     *
+     * @param player
+     *      The players' User instance
+     * @param block
+     *      The block the player clicked (Right Clicked)
+     */
+    public void onBlockClick(User player, Block block) {
         run(player);
     }
-    public void onUserMove(Player player) {}
-    public void onProjectileHit(Projectile projectile) {}
 
+    /**
+     * This method is run when the player moves when their gadget is activated
+     *
+     * @param player
+     *      The players' User instance
+     */
+    public void onUserMove(User player) {}
+
+    /**
+     * This method is called when the projectile their gadget shot lands
+     *
+     * @param player
+     *      The players' User instance
+     * @param projectile
+     *      The Projectile the player shot
+     */
+    public void onProjectileHit(User player, Projectile projectile) {}
+
+    /**
+     * This is the ItemBuilder method that can be used to checking the items
+     */
     public ItemBuilder getItem() {
         return _BUILDER_;
     }
+
+    /**
+     * This is for loading the default item into the Gadget File...
+     *
+     * DO NOT USE
+     */
+    @Deprecated
     public abstract ItemBuilder getDefaultItem();
 
     /**
@@ -124,6 +138,7 @@ public abstract class Gadget extends JSONFile {
         return this.idName;
     }
 
+    //TODO: Make this its own class, and redo the code to fit the new system.
     public static class Listeners implements Listener {
         public Listeners() {
             Bukkit.getServer().getPluginManager().registerEvents(this, Core.get());
