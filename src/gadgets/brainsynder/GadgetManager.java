@@ -1,15 +1,17 @@
 package gadgets.brainsynder;
 
+import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.event.GadgetListener;
 import gadgets.brainsynder.api.event.gadget.GadgetRegisterEvent;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
-import old.brainsynder.Gadgets.Errors.GadgetRegisterException;
+import gadgets.brainsynder.utilities.errors.GadgetRegisterException;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,16 +54,34 @@ public class GadgetManager {
         //System.out.println("SimpleGadgets >> The gadget " + WordUtils.capitalizeFully(gadget.getIdName().replace("_", " ")) + " was successfully registered with the id " + gadget.getId());
     }
 
-    public Gadget getByIdName(String idName) {
+    public Gadget getByIdName(String idName, boolean newInstance) {
         for (Gadget gadget : byName.values()) {
-            if (gadget.getIdName().equals(idName)) return gadget;
+            if (gadget.getIdName().equals(idName)) {
+                if (newInstance) {
+                    try {
+                        return gadget.getClass().getConstructor(GadgetPlugin.class).newInstance(core);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return gadget;
+            }
         }
         return null;
     }
 
-    public Gadget getByItem(ItemStack item) {
+    public Gadget getByItem(ItemStack item, boolean newInstance) {
         for (Gadget gadget : byName.values()) {
-            if (core.getUtilities().isSimilar(gadget.getItem().build(), item)) return gadget;
+            if (core.getUtilities().isSimilar(gadget.getItem().build(), item)) {
+                if (newInstance) {
+                    try {
+                        return gadget.getClass().getConstructor(GadgetPlugin.class).newInstance(core);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return gadget;
+            }
         }
         return null;
     }
