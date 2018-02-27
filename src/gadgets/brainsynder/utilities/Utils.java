@@ -1,7 +1,6 @@
 package gadgets.brainsynder.utilities;
 
 import gadgets.brainsynder.api.GadgetPlugin;
-import gadgets.brainsynder.api.gadget.Gadget;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
+import simple.brainsynder.math.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +136,7 @@ public class Utils {
 
             if (!proj.isValid()) {
                 proj.setVelocity(direction);
-                Gadget.RandomRef.noArc(proj, direction);
+                Utils.this.noArc(proj, direction);
             }
         }, 1L);
     }

@@ -20,7 +20,7 @@ import gadgets.brainsynder.items.RemoveLoader;
 import gadgets.brainsynder.listeners.GadgetsListener;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
-import old.brainsynder.Gadgets.Errors.GadgetRegisterException;
+import gadgets.brainsynder.utilities.errors.GadgetRegisterException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -31,7 +31,6 @@ import simple.brainsynder.utils.ObjectPager;
 import simple.brainsynder.utils.SpigotPluginHandler;
 
 import java.io.File;
-import java.util.List;
 
 public class Core extends JavaPlugin implements GadgetPlugin {
     public ObjectPager<Gadget> pages;
@@ -115,41 +114,14 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     }
 
     public void registerGadgets() throws GadgetRegisterException {
-        manager.registerGadget(Gadget.FUN_CANNON);
-        manager.registerGadget(Gadget.BAT_BLASTER);
-        manager.registerGadget(Gadget.TRAIL_BLAZER);
-        manager.registerGadget(Gadget.CONFETTI);
-        manager.registerGadget(Gadget.EXPLOSIVE_SNOWBALL);
-        manager.registerGadget(Gadget.WATER_BOMB);
-        manager.registerGadget(Gadget.FIREWORKS);
-        manager.registerGadget(Gadget.MELON_BLASTER);
-        manager.registerGadget(Gadget.QUAKE_GUN);
-        manager.registerGadget(Gadget.WINTER_BREEZE);
-        manager.registerGadget(Gadget.NETHER_BLAZE);
-        manager.registerGadget(Gadget.PAINT_SPRAYER);
-        manager.registerGadget(Gadget.PAINT_TRAIL);
-        manager.registerGadget(Gadget.FIRE_BENDER);
-        manager.registerGadget(Gadget.NATURE_WIND);
-        manager.registerGadget(Gadget.SHEEP_BOMB);
-        manager.registerGadget(Gadget.FALL_SCARE);
-        manager.registerGadget(Gadget.ROCKET);
-        manager.registerGadget(Gadget.PARTICLE_LAZER);
-        manager.registerGadget(Gadget.POOP_BOMB);
-        manager.registerGadget(Gadget.NINJA_VANISH);
-        manager.registerGadget(Gadget.BIRTHDAY_CANNON);
-        manager.registerGadget(Gadget.BBQ_CANNON);
-        manager.registerGadget(Gadget.FREEZE_BOMB);
-        manager.registerGadget(Gadget.STAR_BLAZING);
-        manager.registerGadget(Gadget.BANANA_CANNON);
-        manager.registerGadget(Gadget.GRAVITY_SURGE);
-        manager.registerGadget(Gadget.PANCAKE_CANNON);
-        manager.registerGadget(Gadget.FIREWORK_CANNON);
+
     }
 
     public static Core get() {
         return instance;
     }
 
+    @Override
     public GadgetManager getManager() {
         return manager;
     }
@@ -162,11 +134,6 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     @Override
     public Plugin getPlugin() {
         return this;
-    }
-
-    @Override
-    public List<Gadget> getGadgets() {
-        return Gadget.values();
     }
 
     @Override
