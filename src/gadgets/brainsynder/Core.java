@@ -10,35 +10,39 @@
 
 package gadgets.brainsynder;
 
-import gadgets.brainsynder.Commands.CommandManager;
-import gadgets.brainsynder.Files.Language;
-import gadgets.brainsynder.Gadgets.Errors.GadgetRegisterException;
-import gadgets.brainsynder.Gadgets.Gadget;
-import gadgets.brainsynder.Listeners.GadgetsListener;
-import gadgets.brainsynder.loaders.BackLoader;
-import gadgets.brainsynder.loaders.NextLoader;
-import gadgets.brainsynder.loaders.RemoveLoader;
+import gadgets.brainsynder.api.GadgetPlugin;
+import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.commands.CommandManager;
+import gadgets.brainsynder.files.Language;
+import gadgets.brainsynder.items.BackLoader;
+import gadgets.brainsynder.items.NextLoader;
+import gadgets.brainsynder.items.RemoveLoader;
+import gadgets.brainsynder.listeners.GadgetsListener;
+import gadgets.brainsynder.utilities.EntityUtils;
+import gadgets.brainsynder.utilities.Utils;
+import old.brainsynder.Gadgets.Errors.GadgetRegisterException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import simple.brainsynder.storage.IStorage;
 import simple.brainsynder.storage.StorageList;
-import simple.brainsynder.utils.PageMaker;
+import simple.brainsynder.utils.ObjectPager;
 import simple.brainsynder.utils.SpigotPluginHandler;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Core extends JavaPlugin implements GadgetPlugin {
-    public PageMaker pages;
+    public ObjectPager<Gadget> pages;
     private static Core instance;
     private static Language language;
     public static IStorage<String> slots;
     private RemoveLoader removeGadget;
     private BackLoader back;
     private NextLoader next;
+    private GadgetManager manager;
+    private Utils utilities;
     private File itemsFile = new File(getDataFolder().toString() + "/Items/");
 
     public static Language getLanguage() {
@@ -67,12 +71,16 @@ public class Core extends JavaPlugin implements GadgetPlugin {
             setEnabled(false);
             return;
         }
+
+
         instance = this;
         language = new Language(this);
         language.loadDefaults();
+        utilities = new Utils(this);
+        manager = new GadgetManager(this);
         slots = new StorageList<>(getLanguage().getStringList("Slots-For-Gadgets"));
         if (pages == null) {
-            pages = new PageMaker(new ArrayList<String>(), slots.getSize());
+            pages = new ObjectPager<>(slots.getSize());
         }
         removeGadget = new RemoveLoader(new File(itemsFile, "RemoveGadgetItem.json"));
         next = new NextLoader(new File(itemsFile, "NextPageItem.json"));
@@ -96,60 +104,74 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         back.save();
         if (Bukkit.getOnlinePlayers().size() != 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                Gadget.Variables.removeGadget(player);
+                manager.getUser(player).removeGadget();
             }
         }
     }
 
     @Override
-    public PageMaker getGadgetPageMaker() {
+    public ObjectPager<Gadget> getPages() {
         return pages;
     }
 
     public void registerGadgets() throws GadgetRegisterException {
-        Gadget.registerGadget(Gadget.FUN_CANNON);
-        Gadget.registerGadget(Gadget.BAT_BLASTER);
-        Gadget.registerGadget(Gadget.TRAIL_BLAZER);
-        Gadget.registerGadget(Gadget.CONFETTI);
-        Gadget.registerGadget(Gadget.EXPLOSIVE_SNOWBALL);
-        Gadget.registerGadget(Gadget.WATER_BOMB);
-        Gadget.registerGadget(Gadget.FIREWORKS);
-        Gadget.registerGadget(Gadget.MELON_BLASTER);
-        Gadget.registerGadget(Gadget.QUAKE_GUN);
-        Gadget.registerGadget(Gadget.WINTER_BREEZE);
-        Gadget.registerGadget(Gadget.NETHER_BLAZE);
-        Gadget.registerGadget(Gadget.PAINT_SPRAYER);
-        Gadget.registerGadget(Gadget.PAINT_TRAIL);
-        Gadget.registerGadget(Gadget.FIRE_BENDER);
-        Gadget.registerGadget(Gadget.NATURE_WIND);
-        Gadget.registerGadget(Gadget.SHEEP_BOMB);
-        Gadget.registerGadget(Gadget.FALL_SCARE);
-        Gadget.registerGadget(Gadget.ROCKET);
-        Gadget.registerGadget(Gadget.PARTICLE_LAZER);
-        Gadget.registerGadget(Gadget.POOP_BOMB);
-        Gadget.registerGadget(Gadget.NINJA_VANISH);
-        Gadget.registerGadget(Gadget.BIRTHDAY_CANNON);
-        Gadget.registerGadget(Gadget.BBQ_CANNON);
-        Gadget.registerGadget(Gadget.FREEZE_BOMB);
-        Gadget.registerGadget(Gadget.STAR_BLAZING);
-        Gadget.registerGadget(Gadget.BANANA_CANNON);
-        Gadget.registerGadget(Gadget.GRAVITY_SURGE);
-        Gadget.registerGadget(Gadget.PANCAKE_CANNON);
-        Gadget.registerGadget(Gadget.FIREWORK_CANNON);
+        manager.registerGadget(Gadget.FUN_CANNON);
+        manager.registerGadget(Gadget.BAT_BLASTER);
+        manager.registerGadget(Gadget.TRAIL_BLAZER);
+        manager.registerGadget(Gadget.CONFETTI);
+        manager.registerGadget(Gadget.EXPLOSIVE_SNOWBALL);
+        manager.registerGadget(Gadget.WATER_BOMB);
+        manager.registerGadget(Gadget.FIREWORKS);
+        manager.registerGadget(Gadget.MELON_BLASTER);
+        manager.registerGadget(Gadget.QUAKE_GUN);
+        manager.registerGadget(Gadget.WINTER_BREEZE);
+        manager.registerGadget(Gadget.NETHER_BLAZE);
+        manager.registerGadget(Gadget.PAINT_SPRAYER);
+        manager.registerGadget(Gadget.PAINT_TRAIL);
+        manager.registerGadget(Gadget.FIRE_BENDER);
+        manager.registerGadget(Gadget.NATURE_WIND);
+        manager.registerGadget(Gadget.SHEEP_BOMB);
+        manager.registerGadget(Gadget.FALL_SCARE);
+        manager.registerGadget(Gadget.ROCKET);
+        manager.registerGadget(Gadget.PARTICLE_LAZER);
+        manager.registerGadget(Gadget.POOP_BOMB);
+        manager.registerGadget(Gadget.NINJA_VANISH);
+        manager.registerGadget(Gadget.BIRTHDAY_CANNON);
+        manager.registerGadget(Gadget.BBQ_CANNON);
+        manager.registerGadget(Gadget.FREEZE_BOMB);
+        manager.registerGadget(Gadget.STAR_BLAZING);
+        manager.registerGadget(Gadget.BANANA_CANNON);
+        manager.registerGadget(Gadget.GRAVITY_SURGE);
+        manager.registerGadget(Gadget.PANCAKE_CANNON);
+        manager.registerGadget(Gadget.FIREWORK_CANNON);
     }
 
     public static Core get() {
         return instance;
     }
 
+    public GadgetManager getManager() {
+        return manager;
+    }
+
     @Override
-    public Plugin getGadgetPlugin() {
+    public Utils getUtilities() {
+        return utilities;
+    }
+
+    @Override
+    public Plugin getPlugin() {
         return this;
     }
 
     @Override
     public List<Gadget> getGadgets() {
         return Gadget.values();
+    }
+
+    @Override
+    public EntityUtils getEntityUtils() {
+        return null;
     }
 
     public RemoveLoader getRemoveGadget() {
