@@ -17,6 +17,7 @@ import gadgets.brainsynder.files.Language;
 import gadgets.brainsynder.items.BackLoader;
 import gadgets.brainsynder.items.NextLoader;
 import gadgets.brainsynder.items.RemoveLoader;
+import gadgets.brainsynder.listeners.GadgetEvents;
 import gadgets.brainsynder.listeners.GadgetsListener;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
@@ -93,7 +94,7 @@ public class Core extends JavaPlugin implements GadgetPlugin {
             e.printStackTrace();
         }
         CommandManager.registerCommands();
-        new Gadget.Listeners();
+        new GadgetEvents();
         getServer().getPluginManager().registerEvents(new GadgetsListener(), this);
     }
 

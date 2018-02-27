@@ -144,7 +144,8 @@ public abstract class Gadget extends JSONFile {
             Bukkit.getServer().getPluginManager().registerEvents(this, Core.get());
         }
 
-        /*@EventHandler
+        /*
+        @EventHandler
         private void onSpawn(EntitySpawnEvent e) {
             if (e.isCancelled()) {
                 if (spawnMe && e.getEntity().hasMetadata("Spawnable")) {

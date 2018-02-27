@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityUtils {
-    private static boolean spawnMe = false;
+    public static boolean spawnMe = false;
     private GadgetPlugin plugin;
 
     public EntityUtils(GadgetPlugin plugin) {

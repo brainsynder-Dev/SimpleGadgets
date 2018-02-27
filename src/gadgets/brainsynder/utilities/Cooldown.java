@@ -12,6 +12,7 @@ package gadgets.brainsynder.utilities;
 
 import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.user.User;
 import org.bukkit.entity.Player;
 import simple.brainsynder.nms.IActionMessage;
 import simple.brainsynder.utils.AdvMap;
@@ -55,10 +56,11 @@ public class Cooldown {
     }
 
     public static long getTimeLeft (Player p) {
-        if (!Gadget.Variables.hasGadget(p))
+        User user = Core.get().getManager().getUser(p);
+        if (!user.hasGadget())
             return 0L;
-        if (hasCooldown(p, Gadget.Variables.getGadget(p), false)) {
-            int cooldown = Gadget.Variables.getGadget(p).getCooldown();
+        if (hasCooldown(p, user.getGadget(), false)) {
+            int cooldown = user.getGadget().getCooldown();
             return cooldownMap.getKey (p.getName ()) / 1000L + cooldown - System.currentTimeMillis () / 1000L;
         }else{
             return 0L;

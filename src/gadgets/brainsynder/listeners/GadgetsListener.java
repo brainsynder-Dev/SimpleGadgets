@@ -12,6 +12,7 @@ package gadgets.brainsynder.listeners;
 
 import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.menus.GadgetSelector;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,6 +30,7 @@ public class GadgetsListener implements Listener {
 		if (e.getWhoClicked () instanceof Player) {
 			Player player = (Player)e.getWhoClicked ();
 			if (e.getInventory ().getTitle ().startsWith ("Gadgets: ")) {
+                User user = Core.get().getManager().getUser(player);
 				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) {
 					return;
 				}
@@ -43,8 +45,8 @@ public class GadgetsListener implements Listener {
 				}
 				e.setCancelled (true);
 				if (e.getSlot() == (Core.get().getRemoveGadget().getSlot())) {
-					if (Gadget.Variables.hasGadget(player))
-						Gadget.Variables.removeGadget(player);
+					if (user.hasGadget())
+						user.removeGadget();
 					return;
 				}
 				if ((e.getSlot() == (Core.get().getBack().getSlot()))) {
@@ -58,12 +60,12 @@ public class GadgetsListener implements Listener {
 				if (!Core.getSlots().contains("" + (e.getSlot() + 1))) {
 					return;
 				}
-				Gadget gadget = Gadget.getByItem (e.getCurrentItem ());
+				Gadget gadget = Core.get().getManager().getByItem (e.getCurrentItem(), true);
                 if (gadget == null) {
                     return;
                 }
                 if (gadget.hasPermission(player)) {
-					Gadget.Variables.setGadget(player, gadget);
+					user.setGadget(gadget);
 				}else{
                 	player.sendMessage(Core.getLanguage().getString("Messages.No-Permission", true));
 				}
