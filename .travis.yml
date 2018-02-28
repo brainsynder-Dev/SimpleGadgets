@@ -10,5 +10,5 @@ deploy:
   file: ".release/SimpleGadgets.jar"
   skip_cleanup: true
   on:
-    condition: "${AUTHOR_NAME} = ${GIT_NAME}"
+    condition: ${AUTHOR_NAME} = ${GIT_NAME}
     branch: master
