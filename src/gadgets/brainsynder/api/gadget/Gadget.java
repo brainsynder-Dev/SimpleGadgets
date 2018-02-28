@@ -27,7 +27,7 @@ public abstract class Gadget extends JSONFile {
     private String idName;
     private GadgetPlugin plugin;
     private String _PERMISSION_, _NAME_;
-    private boolean _ENABLED_;
+    private boolean _ENABLED_, removed = false;
     private int _COOLDOWN_;
     private ItemBuilder _BUILDER_;
 
@@ -73,47 +73,60 @@ public abstract class Gadget extends JSONFile {
         return _ENABLED_;
     }
 
+    public boolean isRemoved() {
+        return removed;
+    }
+
     public int getCooldown() {
         return _COOLDOWN_;
     }
 
     /**
+     * This method is fired when the player removes their gadget
+     *
+     * Used to clean up... aka kill mobs/lists/ETC...
+     */
+    public void onRemove () {
+        removed = true;
+    }
+
+    /**
      * This method is run when the player RightClicks their gadget item
      *
-     * @param player
+     * @param user
      *      The players' User instance
      */
-    public void run(User player) {}
+    public void run(User user) {}
 
     /**
      * This method is run when the player Right Clicks a block with their gadget item
      *
-     * @param player
+     * @param user
      *      The players' User instance
      * @param block
      *      The block the player clicked (Right Clicked)
      */
-    public void onBlockClick(User player, Block block) {
-        run(player);
+    public void onBlockClick(User user, Block block) {
+        run(user);
     }
 
     /**
      * This method is run when the player moves when their gadget is activated
      *
-     * @param player
+     * @param user
      *      The players' User instance
      */
-    public void onUserMove(User player) {}
+    public void onUserMove(User user) {}
 
     /**
      * This method is called when the projectile their gadget shot lands
      *
-     * @param player
+     * @param user
      *      The players' User instance
      * @param projectile
      *      The Projectile the player shot
      */
-    public void onProjectileHit(User player, Projectile projectile) {}
+    public void onProjectileHit(User user, Projectile projectile) {}
 
     /**
      * This is the ItemBuilder method that can be used to checking the items

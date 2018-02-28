@@ -17,8 +17,8 @@ import gadgets.brainsynder.files.Language;
 import gadgets.brainsynder.items.BackLoader;
 import gadgets.brainsynder.items.NextLoader;
 import gadgets.brainsynder.items.RemoveLoader;
-import gadgets.brainsynder.listeners.GadgetEvents;
-import gadgets.brainsynder.listeners.GadgetsListener;
+import gadgets.brainsynder.listeners.GadgetListeners;
+import gadgets.brainsynder.listeners.MenuListener;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
 import gadgets.brainsynder.utilities.errors.GadgetRegisterException;
@@ -93,9 +93,9 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         } catch (GadgetRegisterException e) {
             e.printStackTrace();
         }
-        CommandManager.registerCommands();
-        new GadgetEvents();
-        getServer().getPluginManager().registerEvents(new GadgetsListener(), this);
+        CommandManager.registerCommands(this);
+        new GadgetListeners(this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
     }
 
     public void onDisable() {

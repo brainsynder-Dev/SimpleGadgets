@@ -32,7 +32,6 @@ public class User {
     public void setGadget(Gadget gadget) {
         GadgetSelectEvent event = new GadgetSelectEvent(gadget, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
-
         if (event.isCancelled()) return;
 
         if (hasGadget()) removeGadget();

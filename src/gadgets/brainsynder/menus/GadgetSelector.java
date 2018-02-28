@@ -23,7 +23,7 @@ import simple.brainsynder.storage.IStorage;
 public class GadgetSelector {
 
     public static void openMenu(Player player, int page) {
-        Inventory inv = Bukkit.createInventory(null, 54, "Gadgets: " + page + "/" + Core.get().getPages().getMaxPages());
+        Inventory inv = Bukkit.createInventory(null, 54, "Gadgets: " + page + "/" + Core.get().getPages().totalPages());
         for (int i = 0; i < (inv.getSize()); i++) {
             ItemMaker maker = new ItemMaker(Material.STAINED_GLASS_PANE, (byte) 8);
             maker.setName(" ");
@@ -43,16 +43,15 @@ public class GadgetSelector {
             }
         }
         inv.setItem(Core.get().getRemoveGadget().getSlot(), Core.get().getRemoveGadget().getItem());
-        if (Core.get().getPages().getMaxPages() > page) {
+        if (Core.get().getPages().totalPages() > page) {
             inv.setItem(Core.get().getNext().getSlot(), Core.get().getNext().getItem());
         }
         if (page > 1) {
             inv.setItem(Core.get().getBack().getSlot(), Core.get().getBack().getItem());
         }
 
-        for (String s : Core.get().getPages().getPage(page)) {
-            Gadget gadget = Gadget.getByIdName (s);
-            inv.addItem(gadget.getItemStack());
+        for (Gadget gadget : Core.get().getPages().getPage(page)) {
+            inv.addItem(gadget.getItem().build());
         }
 
         player.openInventory(inv);
