@@ -12,6 +12,7 @@ package gadgets.brainsynder;
 
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.gadget.list.*;
 import gadgets.brainsynder.commands.CommandManager;
 import gadgets.brainsynder.files.Language;
 import gadgets.brainsynder.items.BackLoader;
@@ -19,6 +20,7 @@ import gadgets.brainsynder.items.NextLoader;
 import gadgets.brainsynder.items.RemoveLoader;
 import gadgets.brainsynder.listeners.GadgetListeners;
 import gadgets.brainsynder.listeners.MenuListener;
+import gadgets.brainsynder.utilities.BlockUtils;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
 import gadgets.brainsynder.utilities.errors.GadgetRegisterException;
@@ -43,6 +45,8 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     private NextLoader next;
     private GadgetManager manager;
     private Utils utilities;
+    private EntityUtils entityUtils;
+    private BlockUtils blockUtils;
     private File itemsFile = new File(getDataFolder().toString() + "/Items/");
 
     public static Language getLanguage() {
@@ -77,6 +81,8 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         language = new Language(this);
         language.loadDefaults();
         utilities = new Utils(this);
+        entityUtils = new EntityUtils(this);
+        blockUtils = new BlockUtils();
         manager = new GadgetManager(this);
         slots = new StorageList<>(getLanguage().getStringList("Slots-For-Gadgets"));
         if (pages == null) {
@@ -115,7 +121,12 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     }
 
     public void registerGadgets() throws GadgetRegisterException {
-
+        manager.registerGadget(new BananaCannon(this));
+        manager.registerGadget(new BatBlaster(this));
+        manager.registerGadget(new BBQCannon(this));
+        manager.registerGadget(new BirthdayCannon(this));
+        manager.registerGadget(new ConfettiCannon(this));
+        manager.registerGadget(new ExplosiveSnowball(this));
     }
 
     public static Core get() {
@@ -139,6 +150,11 @@ public class Core extends JavaPlugin implements GadgetPlugin {
 
     @Override
     public EntityUtils getEntityUtils() {
+        return null;
+    }
+
+    @Override
+    public BlockUtils getBlockUtils() {
         return null;
     }
 
