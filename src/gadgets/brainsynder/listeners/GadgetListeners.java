@@ -1,6 +1,6 @@
 package gadgets.brainsynder.listeners;
 
-import gadgets.brainsynder.Core;
+import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.event.gadget.GadgetActivateEvent;
 import gadgets.brainsynder.api.event.gadget.GadgetProjectileHitEvent;
 import gadgets.brainsynder.api.gadget.Gadget;
@@ -27,10 +27,12 @@ import simple.brainsynder.nms.ITitleMessage;
 import simple.brainsynder.sound.SoundMaker;
 import simple.brainsynder.utils.Reflection;
 
-public class GadgetEvents implements Listener {
+public class GadgetListeners implements Listener {
+    private GadgetPlugin plugin;
 
-    public GadgetEvents() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, Core.get());
+    public GadgetListeners(GadgetPlugin plugin) {
+        this.plugin = plugin;
+        Bukkit.getServer().getPluginManager().registerEvents(this, plugin.getPlugin());
     }
 
     @EventHandler
@@ -95,7 +97,7 @@ public class GadgetEvents implements Listener {
             if (player.getItemInHand().getType() == Material.AIR) {
                 return;
             }
-            User user = Core.get().getManager().getUser(player);
+            User user = plugin.getManager().getUser(player);
             Gadget gadget = user.getGadget();
             e.setCancelled(true);
             GadgetActivateEvent event = new GadgetActivateEvent(gadget, player);
@@ -119,7 +121,7 @@ public class GadgetEvents implements Listener {
                     (event.getFrom().getBlockY() != event.getTo().getBlockY()) ||
                     (event.getFrom().getBlockZ() != event.getTo().getBlockZ()))) {
 
-                User user = Core.get().getManager().getUser(player);
+                User user = plugin.getManager().getUser(player);
                 Gadget gadget = user.getGadget();
                 if (gadget == null) {
                     return;
@@ -135,7 +137,7 @@ public class GadgetEvents implements Listener {
             }
             if (e.getEntity().getShooter() instanceof Player) {
                 Player player = (Player) e.getEntity().getShooter();
-                User user = Core.get().getManager().getUser(player);
+                User user = plugin.getManager().getUser(player);
                 Gadget gadget = user.getGadget();
                 if (gadget == null) {
                     return;
@@ -150,7 +152,7 @@ public class GadgetEvents implements Listener {
         @EventHandler
         private void onDrop(PlayerDropItemEvent e) {
             Player player = e.getPlayer();
-            User user = Core.get().getManager().getUser(player);
+            User user = plugin.getManager().getUser(player);
             Gadget gadget = user.getGadget();
             ItemStack dropped = e.getItemDrop().getItemStack();
             if (dropped.isSimilar(gadget.getItem().build())) {
@@ -162,35 +164,27 @@ public class GadgetEvents implements Listener {
         @EventHandler
         private void onLeave(PlayerQuitEvent e) {
             Player player = e.getPlayer();
-            User user = Core.get().getManager().getUser(player);
-            Gadget gadget = user.getGadget();
-            if (player.getInventory().contains(gadget.getItem().build())) {
-                player.getInventory().remove(gadget.getItem().build());
-            }
+            plugin.getManager().getUser(player).removeGadget();
         }
 
         @EventHandler
         private void onKick(PlayerKickEvent e) {
             Player player = e.getPlayer();
-            User user = Core.get().getManager().getUser(player);
-            Gadget gadget = user.getGadget();
-            if (player.getInventory().contains(gadget.getItem().build())) {
-                player.getInventory().remove(gadget.getItem().build());
-            }
+            plugin.getManager().getUser(player).removeGadget();
         }
 
         @EventHandler
         private void onDeath(PlayerDeathEvent e) {
             Player player = e.getEntity();
 
-            User user = Core.get().getManager().getUser(player);
+            User user = plugin.getManager().getUser(player);
+            if (!user.hasGadget()) return;
+
             Gadget gadget = user.getGadget();
             if (e.getDrops().contains(gadget.getItem().build())) {
                 e.getDrops().remove(gadget.getItem().build());
             }
-            if (player.getInventory().contains(gadget.getItem().build())) {
-                player.getInventory().remove(gadget.getItem().build());
-            }
+            user.removeGadget();
         }
 
         @EventHandler

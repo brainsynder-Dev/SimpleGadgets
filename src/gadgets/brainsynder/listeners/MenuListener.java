@@ -21,7 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
-public class GadgetsListener implements Listener {
+public class MenuListener implements Listener {
 
 	@EventHandler
 	public void onClick (InventoryClickEvent e) {
