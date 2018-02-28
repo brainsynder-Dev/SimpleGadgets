@@ -3,10 +3,12 @@ jdk:
   - oraclejdk8
 before_deploy:
   - bash ./build.sh
+  - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"
 deploy:
   provider: releases
   api_key: ${TOKEN}
   file: ".release/SimpleGadgets.jar"
   skip_cleanup: true
   on:
+    condition: "${AUTHOR_NAME} = ${GIT_NAME}"
     branch: master
