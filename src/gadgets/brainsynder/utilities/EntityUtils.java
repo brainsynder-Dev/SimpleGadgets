@@ -117,4 +117,29 @@ public class EntityUtils {
         it.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
         return it;
     }
+
+
+    /**
+     * Handles all the checks to see if an Entity is valid...
+     *
+     * @return
+     *      false | Entity is not valid
+     *      true  | Entity is valid
+     */
+    public boolean isValid (Entity entity) {
+        List<Boolean> values = new ArrayList<>();
+        values.add((entity != null));
+
+        if (!values.contains(false)) {
+            values.add(entity.isValid());
+            values.add(!entity.isDead());
+            values.add(!entity.isEmpty());
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
+                values.add(player.isOnline());
+            }
+        }
+
+        return !values.contains(false);
+    }
 }
