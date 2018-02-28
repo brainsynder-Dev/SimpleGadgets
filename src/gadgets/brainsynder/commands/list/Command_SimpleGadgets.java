@@ -1,6 +1,7 @@
 package gadgets.brainsynder.commands.list;
 
 import gadgets.brainsynder.Core;
+import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,8 +9,11 @@ import simple.brainsynder.commands.BaseCommand;
 import simple.brainsynder.utils.SpigotPluginHandler;
 
 public class Command_SimpleGadgets extends BaseCommand {
-    public Command_SimpleGadgets() {
+    private GadgetPlugin plugin;
+
+    public Command_SimpleGadgets(GadgetPlugin plugin) {
         super("simplegadgets");
+        this.plugin=plugin;
     }
 
     private void help(CommandSender sender) {
@@ -46,10 +50,10 @@ public class Command_SimpleGadgets extends BaseCommand {
         if (args.length == 0) {
             help(sender);
         } else if (args[0].equalsIgnoreCase("reload")) {
-            Core.get().getPages().getRaw().clear();
-            for (Gadget gadget : Gadget.Variables.getGadgetList()) {
+            plugin.getPages().clear();
+            for (Gadget gadget : plugin.getManager().getGadgetList()) {
                 if (gadget.isEnabled()) {
-                    Core.get().getPages().getRaw().add(gadget.getIdName());
+                    plugin.getPages().add(gadget);
                 }
             }
             sender.sendMessage("§eSimpleGadgets §6>> §7Gadgets have been reloaded.");
@@ -58,14 +62,13 @@ public class Command_SimpleGadgets extends BaseCommand {
                 sender.sendMessage(messages);
             }
         } else if (args[0].equalsIgnoreCase("gadgetslist")) {
-            for (String s : Core.get().getPages().getRaw()) {
-                Gadget gadget = Gadget.getByIdName(s);
+            for (Gadget gadget : plugin.getPages()) {
                 if (gadget != null)
-                    sender.sendMessage("§6• §eId:§7" + gadget.getId() + "   §eCooldown:§7" + gadget.getCooldown() + "   §eIdName:§7" + gadget.getIdName());
+                    sender.sendMessage("§6• §eCooldown:§7" + gadget.getCooldown() + "   §eIdName:§7" + gadget.getIdName());
             }
         } else if (args[0].equalsIgnoreCase("permissions")) {
             System.out.println("Gadget Permissions: ");
-            for (Gadget gadget : Gadget.values()) {
+            for (Gadget gadget : plugin.getManager().getGadgetList()) {
                 System.out.println("- Permission for the " + gadget.getName() + " gadget is " + gadget.getPermission());
             }
         } else if (args[0].equalsIgnoreCase("author")) {
@@ -86,10 +89,10 @@ public class Command_SimpleGadgets extends BaseCommand {
                 player.sendMessage(Core.getLanguage().getString("Messages.No-Permission", true));
                 return;
             }
-            Core.get().getPages().getRaw().clear();
-            for (Gadget gadget : Gadget.Variables.getGadgetList()) {
+            plugin.getPages().clear();
+            for (Gadget gadget : plugin.getManager().getGadgetList()) {
                 if (gadget.isEnabled()) {
-                    Core.get().getPages().getRaw().add(gadget.getIdName());
+                    plugin.getPages().add(gadget);
                 }
             }
             player.sendMessage("§eSimpleGadgets §6>> §7Gadgets have been reloaded.");
@@ -106,10 +109,9 @@ public class Command_SimpleGadgets extends BaseCommand {
                 player.sendMessage(Core.getLanguage().getString("Messages.No-Permission", true));
                 return;
             }
-            for (String s : Core.get().getPages().getRaw()) {
-                Gadget gadget = Gadget.getByIdName(s);
+            for (Gadget gadget : plugin.getPages()) {
                 if (gadget != null)
-                player.sendMessage("§6• §eId:§7" + gadget.getId() + "    §eCooldown:§7" + gadget.getCooldown() + "    §eIdName:§7" + gadget.getIdName());
+                player.sendMessage("§6• §eCooldown:§7" + gadget.getCooldown() + "    §eIdName:§7" + gadget.getIdName());
             }
         } else if (args[0].equalsIgnoreCase("permissions")) {
             if (!player.hasPermission("SimpleGadgets.command.permissions")) {
@@ -118,7 +120,7 @@ public class Command_SimpleGadgets extends BaseCommand {
             }
             player.sendMessage("§6Gadget Permissions have been printed in the Console/Logs");
             System.out.println("Gadget Permissions: ");
-            for (Gadget gadget : Gadget.values()) {
+            for (Gadget gadget : plugin.getManager().getGadgetList()) {
                 System.out.println("- Permission for the " + gadget.getName() + " gadget is " + gadget.getPermission());
             }
         } else if (args[0].equalsIgnoreCase("author")) {
