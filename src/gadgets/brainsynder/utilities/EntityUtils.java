@@ -133,7 +133,6 @@ public class EntityUtils {
         if (!values.contains(false)) {
             values.add(entity.isValid());
             values.add(!entity.isDead());
-            values.add(!entity.isEmpty());
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 values.add(player.isOnline());

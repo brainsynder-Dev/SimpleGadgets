@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -19,8 +20,12 @@ public class ItemBuilder {
     private ItemStack is;
     private ItemMeta im;
 
+    public ItemBuilder(Material material) {
+        this (material, 1);
+    }
+
     public ItemBuilder(Material material, int amount) {
-        JSON = new JSONObject();
+        JSON = new JSONObject(new LinkedHashMap());
         JSON.put("material", material.name());
         JSON.put("amount", amount);
         this.is = new ItemStack(material, amount);
@@ -31,7 +36,7 @@ public class ItemBuilder {
         if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing a material");
         if (!json.containsKey("amount")) throw new NullPointerException("JSONObject seems to be missing an amount");
 
-        ItemBuilder builder = new ItemBuilder(Material.valueOf(String.valueOf(json.get("material"))), (Integer) json.get("amount"));
+        ItemBuilder builder = new ItemBuilder(Material.valueOf(String.valueOf(json.get("material"))), Integer.parseInt(String.valueOf(json.get("amount"))));
 
         if (json.containsKey("name")) builder.withName(String.valueOf(json.get("name")));
         if (json.containsKey("lore")) {
@@ -39,7 +44,7 @@ public class ItemBuilder {
             lore.addAll(((JSONArray)json.get("lore")));
             builder.withLore(lore);
         }
-        if (json.containsKey("data")) builder.withData((Integer) json.get("data"));
+        if (json.containsKey("data")) builder.withData(Integer.parseInt(String.valueOf(json.get("data"))));
 
         if (json.containsKey("enchants")) {
             JSONArray array = (JSONArray) json.get("enchants");

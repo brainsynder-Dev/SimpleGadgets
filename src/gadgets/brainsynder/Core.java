@@ -150,12 +150,12 @@ public class Core extends JavaPlugin implements GadgetPlugin {
 
     @Override
     public EntityUtils getEntityUtils() {
-        return null;
+        return entityUtils;
     }
 
     @Override
     public BlockUtils getBlockUtils() {
-        return null;
+        return blockUtils;
     }
 
     public RemoveLoader getRemoveGadget() {

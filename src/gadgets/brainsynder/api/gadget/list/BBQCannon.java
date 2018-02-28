@@ -78,6 +78,6 @@ public class BBQCannon extends Gadget {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return null;
+        return new ItemBuilder(Material.COOKED_BEEF).withName("&eBBQ Cannon");
     }
 }

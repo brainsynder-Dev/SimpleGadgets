@@ -25,15 +25,14 @@ public class MenuListener implements Listener {
 
 	@EventHandler
 	public void onClick (InventoryClickEvent e) {
-		if (e.getInventory ().getType () != InventoryType.CHEST)
-			return;
+		if (e.getInventory ().getType () != InventoryType.CHEST) return;
+
 		if (e.getWhoClicked () instanceof Player) {
 			Player player = (Player)e.getWhoClicked ();
 			if (e.getInventory ().getTitle ().startsWith ("Gadgets: ")) {
                 User user = Core.get().getManager().getUser(player);
-				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) {
-					return;
-				}
+				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) return;
+
 				int currentPage;
 				String[] menuArgs = e.getInventory ().getTitle ().split (" ");
 				String[] pageArgs = menuArgs[ 1 ].split ("/");
@@ -44,6 +43,7 @@ public class MenuListener implements Listener {
 					currentPage = 1;
 				}
 				e.setCancelled (true);
+
 				if (e.getSlot() == (Core.get().getRemoveGadget().getSlot())) {
 					if (user.hasGadget())
 						user.removeGadget();
@@ -57,18 +57,19 @@ public class MenuListener implements Listener {
 					GadgetSelector.openMenu (player, ( currentPage + 1 ));
 					return;
 				}
-				if (!Core.getSlots().contains("" + (e.getSlot() + 1))) {
-					return;
-				}
+
+				if (!Core.getSlots().contains(String.valueOf((e.getSlot() + 1)))) return;
+
 				Gadget gadget = Core.get().getManager().getByItem (e.getCurrentItem(), true);
-                if (gadget == null) {
-                    return;
-                }
+				if (gadget == null) return;
+
+				gadget.load(); // This is needed in order for all the gadget details to load
                 if (gadget.hasPermission(player)) {
 					user.setGadget(gadget);
-				}else{
-                	player.sendMessage(Core.getLanguage().getString("Messages.No-Permission", true));
+					return;
 				}
+
+				player.sendMessage(Core.getLanguage().getString("Messages.No-Permission", true));
 			}
 		}
 	}
