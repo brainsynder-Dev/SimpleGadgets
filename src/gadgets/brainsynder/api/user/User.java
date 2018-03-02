@@ -43,6 +43,7 @@ public class User {
 
     public void removeGadget () {
         if (!hasGadget()) return;
+        gadget.onRemove();
         if (player.getInventory().contains(gadget.getItem().build())) {
             player.getInventory().remove(gadget.getItem().build());
             player.updateInventory();

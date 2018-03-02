@@ -17,7 +17,7 @@ public class FunCannon extends Gadget{
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.BLAZE_ROD, 1).withName("&eFun Cannon");
+        return new ItemBuilder(Material.BLAZE_ROD).withName("&eFun Cannon");
     }
 
     @Override

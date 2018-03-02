@@ -15,6 +15,6 @@ public abstract class BlockChanger extends Gadget {
     @Override
     public void onRemove() {
         super.onRemove();
-        if (!storage.isEmpty()) storage.reset();
+        storage.reset();
     }
 }

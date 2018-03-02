@@ -27,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import simple.brainsynder.nms.ITitleMessage;
 import simple.brainsynder.sound.SoundMaker;
+import simple.brainsynder.utils.LagCheck;
 import simple.brainsynder.utils.Reflection;
 
 public class GadgetListeners implements Listener {
@@ -81,6 +82,7 @@ public class GadgetListeners implements Listener {
         if (event.getEntity().hasMetadata("GadgetFB")) {
             event.setCancelled(true);
             FallingBlock fb = (FallingBlock) event.getEntity();
+            if (!LagCheck.getInstance().isLagging())
             fb.getWorld().spigot().playEffect(fb.getLocation(), Effect.STEP_SOUND, fb.getBlockId(), fb.getBlockData(), 0.0F, 0.0F, 0.0F, 0.0F, 1, 32);
             event.getEntity().remove();
         }

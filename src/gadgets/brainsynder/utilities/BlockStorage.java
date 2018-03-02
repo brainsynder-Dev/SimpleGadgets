@@ -2,13 +2,20 @@ package gadgets.brainsynder.utilities;
 
 import org.bukkit.block.Block;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class BlockStorage {
+    private static List<String> locationStorage = new ArrayList<>();
     private LinkedHashMap<String, BlockInfo> compoundList = new LinkedHashMap<>();
 
     public void addBlock(Block block) {
-        compoundList.put(new BlockLocation(block.getLocation()).toDataString(), new BlockInfo(block));
+        String loc = new BlockLocation(block.getLocation()).toDataString();
+        if (!locationStorage.contains(loc)) {
+            compoundList.put(loc, new BlockInfo(block));
+            locationStorage.add(loc);
+        }
     }
 
     public BlockInfo getBlockInfo(Block block) {
@@ -20,12 +27,16 @@ public class BlockStorage {
     }
 
     public boolean contains (Block block) {
-        return compoundList.containsKey(new BlockLocation(block.getLocation()).toDataString());
+        String loc = new BlockLocation(block.getLocation()).toDataString();
+        return locationStorage.contains(loc) || compoundList.containsKey(loc);
     }
 
     public void reset() {
         if (compoundList.isEmpty()) return;
-        compoundList.values().forEach(BlockInfo::placeOriginal);
+        compoundList.values().forEach(info -> {
+            if (locationStorage.contains(info.getLocation().toDataString())) locationStorage.remove(info.getLocation().toDataString());
+            info.placeOriginal();
+        });
         compoundList.clear();
     }
 

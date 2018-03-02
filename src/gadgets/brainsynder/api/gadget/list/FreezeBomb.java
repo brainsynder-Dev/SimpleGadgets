@@ -4,7 +4,6 @@ import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.BlockChanger;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.ItemBuilder;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -20,28 +19,28 @@ import simple.brainsynder.trailer.Trailer;
 
 import java.util.Random;
 
-public class FallScare extends BlockChanger {
-    public FallScare(GadgetPlugin plugin) {
-        super(plugin, "fall_scare");
+public class FreezeBomb extends BlockChanger {
+    public FreezeBomb(GadgetPlugin plugin) {
+        super(plugin, "freeze_bomb");
     }
 
     @Override
     public void run(User user) {
         Player player = user.getPlayer();
 
-        Item item = player.getWorld().dropItem(player.getEyeLocation(), new ItemBuilder(Material.PUMPKIN, 1)
+        Item item = player.getWorld().dropItem(player.getEyeLocation(), new ItemBuilder(Material.ICE)
                 .withName(String.valueOf(Math.random())).build());
         item.setPickupDelay(Integer.MAX_VALUE);
         item.setVelocity(player.getEyeLocation().getDirection());
 
-        SoundMaker.ENTITY_ENDERDRAGON_GROWL.playSound(item.getLocation());
+        SoundMaker.ENTITY_ENDERDRAGON_FLAP.playSound(item.getLocation());
         ITrailer<Item> trailer = new Trailer<>();
         trailer.setTarget(item);
         trailer.setPlayer(player);
 
         IStorage<ParticleMaker> iStorage = new StorageList<>();
-        iStorage.add(new ParticleMaker(ParticleMaker.Particle.REDSTONE, 5, Color.fromRGB(255, 132, 0)));
-        iStorage.add(new ParticleMaker(ParticleMaker.Particle.REDSTONE, 5, Color.fromRGB(0, 0, 0)));
+        iStorage.add(new ParticleMaker(ParticleMaker.Particle.SNOWBALL, 5, 0.2, 0.2, 0.2));
+        iStorage.add(new ParticleMaker(ParticleMaker.Particle.SNOW_SHOVEL, 5, 0.2, 0.2, 0.2));
         trailer.setParticles(iStorage);
 
         trailer.start((JavaPlugin) getPlugin().getPlugin());
@@ -59,13 +58,13 @@ public class FallScare extends BlockChanger {
                 }
 
                 Random rand = new Random();
-                SoundMaker.BLOCK_GRASS_BREAK.playSound(player.getLocation());
+                SoundMaker.BLOCK_STONE_BREAK.playSound(player.getLocation());
                 for (Block block : getPlugin().getBlockUtils().getBlocksInRadius(item.getLocation(), 4, false)) {
                     if (!getPlugin().getBlockUtils().canChange(block)) continue;
                     int i = rand.nextInt (2) + 1;
                     if (storage.contains(block)) continue;
                     storage.addBlock(block);
-                    Material material = (i == 1) ? Material.COAL_BLOCK : Material.JACK_O_LANTERN;
+                    Material material = (i == 1) ? Material.ICE : Material.PACKED_ICE;
                     block.setType(material);
                     ParticleMaker maker = new ParticleMaker(ParticleMaker.Particle.BLOCK_DUST, 5, 1.0);
                     maker.setData(material);
@@ -86,6 +85,6 @@ public class FallScare extends BlockChanger {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.PUMPKIN, 1).withName("&eFall Scare");
+        return new ItemBuilder(Material.PACKED_ICE).withName("&eFreeze Bomb");
     }
 }

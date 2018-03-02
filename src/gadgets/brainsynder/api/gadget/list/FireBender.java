@@ -35,6 +35,7 @@ public class FireBender extends Gadget implements GadgetListener {
             public void run() {
                 if (isRemoved()) {
                     cancel();
+                    p.setFireTicks(0);
                     return;
                 }
                 if (!getPlugin().getEntityUtils().isValid(p)) {

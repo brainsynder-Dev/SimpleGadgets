@@ -8,8 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 public class Firework extends Gadget {
-    public Firework(GadgetPlugin plugin, String idName) {
-        super(plugin, idName);
+    public Firework(GadgetPlugin plugin) {
+        super(plugin, "fireworks");
     }
 
     @Override
