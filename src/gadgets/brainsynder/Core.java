@@ -134,7 +134,7 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         manager.registerGadget(new FreezeBomb(this));
         manager.registerGadget(new FunCannon(this));
         manager.registerGadget(new GravitySurge(this));
-        manager.registerGadget(new Lazer(this));
+        manager.registerGadget(new Laser(this));
         manager.registerGadget(new MelonBlaster(this));
         manager.registerGadget(new NatureWind(this));
         manager.registerGadget(new NetherBlaze(this));

@@ -11,9 +11,9 @@ import org.bukkit.entity.LivingEntity;
 import simple.brainsynder.api.ParticleMaker;
 import simple.brainsynder.sound.SoundMaker;
 
-public class Lazer extends Gadget {
-    public Lazer(GadgetPlugin plugin) {
-        super(plugin, "particle_lazer");
+public class Laser extends Gadget {
+    public Laser(GadgetPlugin plugin) {
+        super(plugin, "particle_laser");
     }
 
     @Override
@@ -62,6 +62,6 @@ public class Lazer extends Gadget {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.CLAY_BRICK).withName("&eParticle Lazer");
+        return new ItemBuilder(Material.CLAY_BRICK).withName("&eParticle Laser");
     }
 }
