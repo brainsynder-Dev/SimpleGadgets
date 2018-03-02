@@ -148,12 +148,14 @@ public class BlockUtils {
                 || b.getType() == Material.LONG_GRASS
                 || b.getType() == Material.SAPLING
                 || b.getType() == Material.WATER_LILY
+                || b.getType().name().contains("CHORUS")
                 || b.getType() == Material.CACTUS)
                 && (b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.GRASS
                 || b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.DIRT
-                || b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.SAND)) {
+                || b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.SAND
+                || b.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.ENDER_STONE)) {
             return false;
-        } else if ((b.getType() == Material.GRASS || b.getType() == Material.DIRT || b.getType() == Material.SAND)
+        } else if ((b.getType() == Material.GRASS || b.getType() == Material.DIRT || b.getType() == Material.ENDER_STONE || b.getType() == Material.SAND)
                 && (b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.YELLOW_FLOWER
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.RED_ROSE
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.DOUBLE_PLANT
@@ -161,6 +163,7 @@ public class BlockUtils {
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.LONG_GRASS
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.SAPLING
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.WATER_LILY
+                || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType().name().contains("CHORUS")
                 || b.getLocation().add(0.0D, 1.0D, 0.0D).getBlock().getType() == Material.CACTUS)) {
             return false;
         } else if (!b.isLiquid()) {
