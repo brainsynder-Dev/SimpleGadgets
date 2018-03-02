@@ -4,6 +4,7 @@ import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.event.gadget.GadgetActivateEvent;
 import gadgets.brainsynder.api.event.gadget.GadgetProjectileHitEvent;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.gadget.list.FireBender;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.Cooldown;
 import gadgets.brainsynder.utilities.EntityUtils;
@@ -188,6 +189,21 @@ public class GadgetListeners implements Listener {
         if (e.getDamager() instanceof Projectile) {
             Projectile proj = (Projectile) e.getDamager();
             if (proj.hasMetadata("GadgetProj")) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    private void onFire (EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player) {
+            if ((e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)
+                    || (e.getCause() == EntityDamageEvent.DamageCause.FIRE)) {
+                User user = plugin.getManager().getUser((Player)e.getEntity());
+                if (!user.hasGadget()) return;
+                if (!(user.getGadget() instanceof FireBender)) return;
+                FireBender fireBender = (FireBender) user.getGadget();
+                if (!fireBender.isUsing()) return;
                 e.setCancelled(true);
             }
         }

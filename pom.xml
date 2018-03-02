@@ -6,7 +6,7 @@
 
     <groupId>gadgets.brainsynder</groupId>
     <artifactId>SimpleGadgets</artifactId>
-    <version>1.5</version>
+    <version>1.5-SNAPSHOT</version>
 
     <build>
         <plugins>

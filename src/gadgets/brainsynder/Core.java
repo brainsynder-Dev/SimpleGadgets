@@ -71,7 +71,7 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         }
         SpigotPluginHandler spigotPluginHandler = new SpigotPluginHandler(this, 22728, SpigotPluginHandler.MetricType.BSTATS);
         SpigotPluginHandler.registerPlugin(spigotPluginHandler);
-        if (!spigotPluginHandler.runTamperCheck("brainsynder", "SimpleGadgets", "1.5")) {
+        if (!spigotPluginHandler.runTamperCheck("brainsynder", "SimpleGadgets", "1.5-SNAPSHOT")) {
             setEnabled(false);
             return;
         }
@@ -127,6 +127,8 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         manager.registerGadget(new BirthdayCannon(this));
         manager.registerGadget(new ConfettiCannon(this));
         manager.registerGadget(new ExplosiveSnowball(this));
+        manager.registerGadget(new FallScare(this));
+        manager.registerGadget(new FireBender(this));
     }
 
     public static Core get() {

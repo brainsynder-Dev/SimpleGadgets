@@ -34,9 +34,11 @@ public class ItemBuilder {
 
     public static ItemBuilder fromJSON (JSONObject json) {
         if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing a material");
-        if (!json.containsKey("amount")) throw new NullPointerException("JSONObject seems to be missing an amount");
 
-        ItemBuilder builder = new ItemBuilder(Material.valueOf(String.valueOf(json.get("material"))), Integer.parseInt(String.valueOf(json.get("amount"))));
+        int amount = 1;
+        if (json.containsKey("amount")) amount = Integer.parseInt(String.valueOf(json.get("amount")));
+
+        ItemBuilder builder = new ItemBuilder(Material.valueOf(String.valueOf(json.get("material"))), amount);
 
         if (json.containsKey("name")) builder.withName(String.valueOf(json.get("name")));
         if (json.containsKey("lore")) {
@@ -49,10 +51,12 @@ public class ItemBuilder {
         if (json.containsKey("enchants")) {
             JSONArray array = (JSONArray) json.get("enchants");
             for (Object o : array) {
-                String[] args = String.valueOf(o).split(" ~~ ");
-                Enchantment enchant = Enchantment.getByName(args[0]);
-                int level = Integer.parseInt(args[1]);
-                builder.withEnchant(enchant, level);
+                try {
+                    String[] args = String.valueOf(o).split(" ~~ ");
+                    Enchantment enchant = Enchantment.getByName(args[0]);
+                    int level = Integer.parseInt(args[1]);
+                    builder.withEnchant(enchant, level);
+                }catch (Exception ignored) {}
             }
         }
         if (json.containsKey("flags")) {
@@ -115,6 +119,7 @@ public class ItemBuilder {
         return this;
     }
 
+    @Deprecated
     public ItemBuilder withData(int data) {
         JSON.put("data", data);
         is.setDurability((short) data);
@@ -196,10 +201,7 @@ public class ItemBuilder {
     }
     private List<String> translate(List<String> message) {
         ArrayList<String> newLore = new ArrayList<>();
-
-        for (String msg : message)
-            newLore.add(translate(msg));
-
+        message.forEach(msg -> newLore.add(translate(msg)));
         return newLore;
     }
 }

@@ -8,6 +8,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import simple.brainsynder.api.ParticleMaker;
 import simple.brainsynder.sound.SoundMaker;
 
@@ -41,10 +42,17 @@ public class ConfettiCannon extends Gadget {
         double sin = Math.sin(pitch) * Math.sin(yaw);
         double cosP = Math.cos(pitch);
 
+        int delay = 1;
         for (double i = 0.9; i < 2.5; i += 0.1) {
             Location localLocation2 = new Location(player.getWorld(), x + i * cos, (y + i * cosP), z + i * sin);
             if (localLocation2.getBlock().getType().isSolid()) break;
-            particles.forEach(maker -> maker.sendToLocation(localLocation2));
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    particles.forEach(maker -> maker.sendToLocation(localLocation2));
+                }
+            }.runTaskLater(getPlugin().getPlugin(), delay);
+            delay++;
         }
         SoundMaker.ENTITY_EXPERIENCE_ORB_PICKUP.playSound(player.getLocation());
     }

@@ -1,6 +1,6 @@
 name: SimpleGadgets
 main: gadgets.brainsynder.Core
-version: 1.5
+version: 1.5-SNAPSHOT
 depends: [SimpleAPI]
 loadbefore: [SimpleGadgets-Addon]
 authors: [brainsynder]
