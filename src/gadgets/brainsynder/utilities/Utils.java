@@ -147,6 +147,16 @@ public class Utils {
     public void noArc(final Entity projectile, final org.bukkit.util.Vector direction) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin.getPlugin(), () -> {
             if (!plugin.getEntityUtils().isValid(projectile)) return;
+            Location loc = projectile.getLocation();
+            if (loc.getY() > loc.getWorld().getMaxHeight()) {
+                projectile.remove();
+                return;
+            }
+            if (loc.getY() < 0) {
+                projectile.remove();
+                return;
+            }
+
             projectile.setVelocity(direction);
             Utils.this.noArc(projectile, direction);
         }, 1L);

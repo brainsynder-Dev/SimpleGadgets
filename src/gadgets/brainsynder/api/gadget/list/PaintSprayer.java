@@ -28,7 +28,6 @@ public class PaintSprayer extends BlockChanger {
 
     @Override
     public void onProjectileHit(User user, Projectile projectile, Location location) {
-        //Location location = projectile.getLocation();
         SoundMaker.ENTITY_CHICKEN_EGG.playSound(location, 0.5F, 0.3F);
         for (Block block2 : getPlugin().getBlockUtils().getBlocksInRadius(location, MathUtils.random(1,3), false)) {
             if (!getPlugin().getBlockUtils().canChange(block2)) continue;
@@ -49,6 +48,6 @@ public class PaintSprayer extends BlockChanger {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.GOLD_BARDING).withName("Paint Sprayer");
+        return new ItemBuilder(Material.GOLD_BARDING).withName("&ePaint Sprayer");
     }
 }
