@@ -247,7 +247,7 @@ public class BlockUtils {
                 blockedblocks.add(Material.REDSTONE_TORCH_ON);
                 blockedblocks.add(Material.REDSTONE_TORCH_OFF);
                 blockedblocks.add(Material.CACTUS);
-                blockedblocks.add(Material.MOB_SPAWNER);
+                //blockedblocks.add(Material.MOB_SPAWNER);
                 blockedblocks.add(Material.SUGAR_CANE_BLOCK);
                 blockedblocks.add(Material.PISTON_BASE);
                 blockedblocks.add(Material.PISTON_EXTENSION);

@@ -37,24 +37,24 @@ public class EntityUtils {
 
 
     // This section deals with the Projectile utilities
-    public Projectile launchProjectile(LivingEntity entity, Class<? extends Projectile> proj) {
+    public <T extends Projectile>T launchProjectile(LivingEntity entity, Class<? extends T> proj) {
         return launchProjectile(entity, proj, 2);
     }
 
-    public Projectile launchProjectile(LivingEntity entity, Class<? extends Projectile> proj, double mod) {
+    public <T extends Projectile>T launchProjectile(LivingEntity entity, Class<? extends T> proj, double mod) {
         return launchProjectile(entity, proj, (float)mod);
     }
 
-    public Projectile launchProjectile(LivingEntity entity, Class<? extends Projectile> proj, int mod) {
+    public <T extends Projectile>T launchProjectile(LivingEntity entity, Class<? extends T> proj, int mod) {
         return launchProjectile(entity, proj, (float)mod);
     }
 
-    public Projectile launchProjectile(LivingEntity entity, Class<? extends Projectile> proj, float mod) {
+    public <T extends Projectile>T launchProjectile(LivingEntity entity, Class<? extends T> proj, float mod) {
         Projectile p = entity.launchProjectile(proj);
         p.setShooter(entity);
         p.setMetadata("GadgetProj", new FixedMetadataValue(plugin.getPlugin(), "GadgetProj"));
         p.setVelocity(p.getVelocity().multiply(mod));
-        return p;
+        return (T)p;
     }
 
 

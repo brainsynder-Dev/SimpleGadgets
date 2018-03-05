@@ -1,10 +1,8 @@
 package gadgets.brainsynder.utilities;
 
 import gadgets.brainsynder.api.GadgetPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -13,16 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import simple.brainsynder.math.MathUtils;
+import simple.brainsynder.utils.LagCheck;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
     private GadgetPlugin plugin;
 
-    public Utils (GadgetPlugin plugin) {
+    public Utils(GadgetPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -88,13 +84,32 @@ public class Utils {
         return player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(100.0));
     }
 
+    public Location getTargetBlock(Player p, int distance, HashSet<Material> transparent) {
+        if (transparent == null) {
+            transparent = new HashSet<>();
+        }
+
+        Vector dir = p.getLocation().getDirection();
+        Location loc = p.getLocation();
+        while (true) {
+            if ((!transparent.isEmpty()) && (!transparent.contains(loc.getBlock().getType()))) {
+                break;
+            }
+            loc.add(dir);
+            if (loc.distance(p.getLocation()) > distance) {
+                break;
+            }
+        }
+        return loc;
+    }
+
     public Location getTargetLocation(LivingEntity player, double length) {
         return player.getLocation().clone().add(player.getEyeLocation().getDirection().multiply(length));
     }
 
     public List<Location> getStraightLine(LivingEntity user, int length) {
         List<Location> locations = new ArrayList<>();
-        Location start = user.getEyeLocation();
+        Location start = getEyeLocation(user);
         Location end = getTargetLocation(user, length);
         double dist = Math.abs(end.distance(start));
         for (int i = -1; i < length; ++i) {
@@ -102,8 +117,7 @@ public class Utils {
             double x = (1.0D - delta) * start.getX() + delta * (end.getX() + 0.5D);
             double y = (1.0D - delta) * start.getY() + delta * (end.getY() + 0.5D);
             double z = (1.0D - delta) * start.getZ() + delta * (end.getZ() + 0.5D);
-            Location l = new Location(start.getWorld(), x, y, z);
-            locations.add(l);
+            locations.add(new Location(start.getWorld(), x, y, z));
         }
         return locations;
     }
@@ -130,16 +144,11 @@ public class Utils {
         return loc;
     }
 
-    public void noArc(final Entity proj, final org.bukkit.util.Vector direction) {
+    public void noArc(final Entity projectile, final org.bukkit.util.Vector direction) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin.getPlugin(), () -> {
-            if (proj == null) {
-                return;
-            }
-
-            if (!proj.isValid()) {
-                proj.setVelocity(direction);
-                Utils.this.noArc(proj, direction);
-            }
+            if (!plugin.getEntityUtils().isValid(projectile)) return;
+            projectile.setVelocity(direction);
+            Utils.this.noArc(projectile, direction);
         }, 1L);
     }
 
@@ -214,5 +223,12 @@ public class Utils {
         if (i == 16) c = Color.WHITE;
         if (i == 17) c = Color.YELLOW;
         return c;
+    }
+
+    @Deprecated
+    public void blockParticles(Block block) {
+        if (LagCheck.getInstance().isLagging()) return;
+        //block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getState().getData());
+        block.getWorld().spigot().playEffect(block.getLocation(), Effect.STEP_SOUND, block.getTypeId(), block.getData(), 0.0F, 0.0F, 0.0F, 0.0F, 1, 32);
     }
 }

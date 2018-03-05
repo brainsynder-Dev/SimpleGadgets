@@ -3,6 +3,7 @@ package gadgets.brainsynder.listeners;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.event.gadget.GadgetActivateEvent;
 import gadgets.brainsynder.api.event.gadget.GadgetProjectileHitEvent;
+import gadgets.brainsynder.api.gadget.BlockChanger;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.gadget.list.FireBender;
 import gadgets.brainsynder.api.user.User;
@@ -10,6 +11,7 @@ import gadgets.brainsynder.utilities.Cooldown;
 import gadgets.brainsynder.utilities.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -22,7 +24,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import simple.brainsynder.nms.ITitleMessage;
@@ -50,7 +51,13 @@ public class GadgetListeners implements Listener {
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent e) {
-        if (e.getBlock().hasMetadata("GadgetNoBlockBreak")) e.setCancelled(true);
+        User user = plugin.getManager().getUser(e.getPlayer());
+        if (!user.hasGadget()) return;
+        Gadget gadget = user.getGadget();
+        if (gadget instanceof BlockChanger) {
+            BlockChanger changer = (BlockChanger)gadget;
+            if (changer.getStorage().contains(e.getBlock())) e.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -140,12 +147,20 @@ public class GadgetListeners implements Listener {
         if (e.getEntity().getShooter() instanceof Player) {
             Player player = (Player) e.getEntity().getShooter();
             User user = plugin.getManager().getUser(player);
+            if (!user.hasGadget()) return;
+            Location location;
+            if (plugin.getEntityUtils().isValid(e.getHitEntity())) {
+                location = e.getHitEntity().getLocation();
+            }else if (e.getHitBlock() != null){
+                location = e.getHitBlock().getLocation();
+            }else{
+                location = e.getEntity().getLocation();
+            }
             Gadget gadget = user.getGadget();
-            if (gadget == null) return;
-
             GadgetProjectileHitEvent event = new GadgetProjectileHitEvent(gadget, e.getEntity());
             Bukkit.getServer().getPluginManager().callEvent(event);
             gadget.onProjectileHit(user, event.getProjectile());
+            gadget.onProjectileHit(user, event.getProjectile(), location);
             event.getProjectile().remove();
         }
     }
@@ -154,11 +169,12 @@ public class GadgetListeners implements Listener {
     private void onDrop(PlayerDropItemEvent e) {
         Player player = e.getPlayer();
         User user = plugin.getManager().getUser(player);
-        Gadget gadget = user.getGadget();
-        ItemStack dropped = e.getItemDrop().getItemStack();
-        if (dropped.isSimilar(gadget.getItem().build())) {
+        if (!user.hasGadget()) return;
+
+        if (e.getItemDrop().getItemStack().isSimilar(user.getGadget().getItem().build())) {
             e.setCancelled(true);
             user.removeGadget();
+            player.updateInventory();
         }
     }
 

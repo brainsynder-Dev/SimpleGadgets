@@ -17,4 +17,8 @@ public abstract class BlockChanger extends Gadget {
         super.onRemove();
         storage.reset();
     }
+
+    public BlockStorage getStorage() {
+        return storage;
+    }
 }

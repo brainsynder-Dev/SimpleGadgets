@@ -35,16 +35,19 @@ public class BlockStorage {
         if (compoundList.isEmpty()) return;
         compoundList.values().forEach(info -> {
             if (locationStorage.contains(info.getLocation().toDataString())) locationStorage.remove(info.getLocation().toDataString());
-            info.placeOriginal();
+            //info.placeOriginal();
+            info.getState().update(true);
         });
         compoundList.clear();
     }
 
     public void reset(Block block) {
+        block.getState().getData();
         if (compoundList.isEmpty()) return;
         if (!contains(block)) return;
         BlockInfo save = getBlockInfo(block);
-        save.placeOriginal();
+        save.getState().update(true);
+        if (locationStorage.contains(save.getLocation().toDataString())) locationStorage.remove(save.getLocation().toDataString());
         compoundList.remove(save.getLocation().toDataString());
     }
 }

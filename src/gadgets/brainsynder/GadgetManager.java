@@ -19,7 +19,7 @@ import java.util.Map;
 public class GadgetManager {
     private Core core;
     private Map<String, Gadget> byName = new HashMap<>();
-    private Map<String, User> userMap = new HashMap<>();
+    private static Map<String, User> userMap = new HashMap<>();
 
     GadgetManager (Core core) {
         this.core = core;
@@ -87,7 +87,8 @@ public class GadgetManager {
     }
 
     public User getUser (Player player) {
-        if (userMap.containsKey(player.getUniqueId().toString())) return userMap.get(player.getUniqueId().toString());
+        if (userMap.containsKey(player.getUniqueId().toString()))
+            return userMap.get(player.getUniqueId().toString());
         User user = new User(player);
         userMap.put(player.getUniqueId().toString(), user);
         return user;

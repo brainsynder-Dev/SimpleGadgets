@@ -16,14 +16,21 @@ import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.files.JSONFile;
 import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Listener;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Gadget extends JSONFile {
+    protected List<Item> removableItems = new ArrayList<>();
+    protected List<Entity> removableEntities = new ArrayList<>();
     private String idName;
     private GadgetPlugin plugin;
     private String _PERMISSION_, _NAME_;
@@ -88,6 +95,18 @@ public abstract class Gadget extends JSONFile {
      */
     public void onRemove () {
         removed = true;
+        if (!removableItems.isEmpty()) {
+            removableItems.stream()
+                    .filter(item -> getPlugin().getEntityUtils().isValid(item))
+                    .forEach(Item::remove);
+            removableItems.clear();
+        }
+        if (!removableEntities.isEmpty()) {
+            removableEntities.stream()
+                    .filter(entity -> getPlugin().getEntityUtils().isValid(entity))
+                    .forEach(Entity::remove);
+            removableEntities.clear();
+        }
     }
 
     /**
@@ -127,6 +146,7 @@ public abstract class Gadget extends JSONFile {
      *      The Projectile the player shot
      */
     public void onProjectileHit(User user, Projectile projectile) {}
+    public void onProjectileHit(User user, Projectile projectile, Location location) {}
 
     /**
      * This is the ItemBuilder method that can be used to checking the items
