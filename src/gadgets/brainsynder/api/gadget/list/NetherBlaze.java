@@ -32,6 +32,7 @@ public class NetherBlaze extends BlockChanger {
                 .withName(String.valueOf(Math.random())).build());
         item.setPickupDelay(Integer.MAX_VALUE);
         item.setVelocity(player.getEyeLocation().getDirection());
+        removableItems.add(item);
 
         SoundMaker.ENTITY_ENDERDRAGON_FLAP.playSound(item.getLocation());
         ITrailer<Item> trailer = new Trailer<>();

@@ -53,6 +53,7 @@ public class GravitySurge extends Gadget {
                     FallingBlock falling = p.getWorld().spawnFallingBlock(block.getLocation().add(0, 2, 0), block.getState().getData());
                     falling.setDropItem(false);
                     falling.setMetadata("GadgetFB", new FixedMetadataValue(getPlugin().getPlugin(), "GadgetFB"));
+                    removableEntities.add(falling);
                     BukkitTask task = new BukkitRunnable() {
                         @Override
                         public void run() {

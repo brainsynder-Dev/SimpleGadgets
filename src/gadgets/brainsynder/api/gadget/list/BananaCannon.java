@@ -21,22 +21,9 @@ import simple.brainsynder.storage.StorageList;
 import simple.brainsynder.trailer.AsyncTrailer;
 import simple.brainsynder.trailer.IAsyncTrailer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BananaCannon extends Gadget {
-    private List<Item> items = new ArrayList<>();
     public BananaCannon(GadgetPlugin plugin) {
         super(plugin, "banana_cannon");
-    }
-
-    @Override
-    public void onRemove() {
-        super.onRemove();
-        if (!items.isEmpty()) {
-            items.stream().filter(item -> getPlugin().getEntityUtils().isValid(item)).forEach(Item::remove);
-            items.clear();
-        }
     }
 
     @Override
@@ -49,6 +36,7 @@ public class BananaCannon extends Gadget {
         drop.setPickupDelay(Integer.MAX_VALUE);
         Vector vector = getPlugin().getUtilities().calculatePath(p);
         drop.setVelocity(vector);
+        removableItems.add(drop);
         getPlugin().getUtilities().noArc(drop, vector);
         SoundMaker.ENTITY_EXPERIENCE_ORB_PICKUP.playSound(drop.getLocation());
         IAsyncTrailer<Entity> trailer = new AsyncTrailer<>();
@@ -95,7 +83,7 @@ public class BananaCannon extends Gadget {
                     storage.add(iStorage.get(i));
                     trailer.setParticles(storage);
                     trailer.start((JavaPlugin) getPlugin().getPlugin());
-                    items.add(fb);
+                    removableItems.add(fb);
 
                     new BukkitRunnable() {
                         @Override

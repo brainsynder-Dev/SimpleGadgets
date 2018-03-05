@@ -16,21 +16,9 @@ import org.bukkit.util.Vector;
 import simple.brainsynder.api.ParticleMaker;
 import simple.brainsynder.sound.SoundMaker;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MelonBlaster extends Gadget {
-    private List<Item> items = new ArrayList<>();
     public MelonBlaster(GadgetPlugin plugin) {
         super(plugin, "melon_blaster");
-    }
-
-    @Override
-    public void onRemove() {
-        super.onRemove();
-        if (!items.isEmpty())
-            items.stream().filter(item -> getPlugin().getEntityUtils().isValid(item))
-                    .forEach(Item::remove);
     }
 
     @Override
@@ -69,13 +57,13 @@ public class MelonBlaster extends Gadget {
                     Item fb = p.getWorld().dropItem(it.getLocation(), is);
                     fb.setVelocity(new Vector(x, y, z));
                     fb.setMetadata("eatable", new FixedMetadataValue(Core.get(), "eatable"));
-                    items.add(fb);
+                    removableItems.add(fb);
                 }
                 it.remove();
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        items.stream().filter(item -> getPlugin().getEntityUtils().isValid(item))
+                        removableItems.stream().filter(item -> getPlugin().getEntityUtils().isValid(item))
                                 .forEach(Item::remove);
                     }
                 }.runTaskLater(Core.get (), 20*20);

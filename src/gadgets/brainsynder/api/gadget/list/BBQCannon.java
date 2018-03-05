@@ -36,6 +36,7 @@ public class BBQCannon extends Gadget {
 
                 Item item = getPlugin().getEntityUtils().launchItem(player, new ItemMaker(Material.COOKED_BEEF).setName("" + Math.random()).create());
                 item.setFireTicks(156151);
+                removableItems.add(item);
                 SoundMaker.ENTITY_CHICKEN_EGG.playSound(player.getLocation());
                 BukkitRunnable flameParticles = new BukkitRunnable() {
                     @Override

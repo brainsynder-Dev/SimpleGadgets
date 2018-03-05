@@ -7,27 +7,14 @@ import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Bat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import simple.brainsynder.api.ParticleMaker;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BatBlaster extends Gadget {
-    private static List<Bat> bats = new ArrayList<>();
     public BatBlaster(GadgetPlugin plugin) {
         super(plugin, "Bat Blaster");
-    }
-
-    @Override
-    public void onRemove() {
-        super.onRemove();
-        if (!bats.isEmpty()) {
-            bats.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
-                    .forEach(Bat::remove);
-            bats.clear();
-        }
     }
 
     @Override
@@ -37,7 +24,7 @@ public class BatBlaster extends Gadget {
         for (int i = 0; i < 10; i++) {
             Bat bat = getPlugin().getEntityUtils().spawnMob(p.getEyeLocation(), Bat.class);
             if (!getPlugin().getEntityUtils().isValid(bat)) continue;
-            bats.add(bat);
+            removableEntities.add(bat);
         }
 
         new BukkitRunnable() {
@@ -48,26 +35,26 @@ public class BatBlaster extends Gadget {
                     return;
                 }
 
-                if (bats.isEmpty()) {
+                if (removableEntities.isEmpty()) {
                     cancel ();
                     return;
                 }
 
                 if (!getPlugin().getEntityUtils().isValid(p)) {
-                    bats.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
-                            .forEach(Bat::remove);
-                    bats.clear();
+                    removableEntities.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
+                            .forEach(Entity::remove);
+                    removableEntities.clear();
                     cancel();
                     return;
                 }
 
                 Location fwe = p.getEyeLocation().clone();
-                for (Bat bat : bats) {
-                    if (!getPlugin().getEntityUtils().isValid(bat)) continue;
+                for (Entity entity : removableEntities) {
+                    if (!getPlugin().getEntityUtils().isValid(entity)) continue;
 
                     new ParticleMaker (ParticleMaker.Particle.SMOKE_LARGE, 3,
-                            0.2F, 0.2F, 0.2F).sendToLocation(bat.getLocation());
-                    bat.setVelocity(fwe.getDirection().clone().multiply(0.9D));
+                            0.2F, 0.2F, 0.2F).sendToLocation(entity.getLocation());
+                    entity.setVelocity(fwe.getDirection().clone().multiply(0.9D));
                 }
             }
         }.runTaskTimer(getPlugin().getPlugin(), 0, 1);
@@ -75,9 +62,9 @@ public class BatBlaster extends Gadget {
         new BukkitRunnable() {
             @Override
             public void run() {
-                bats.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
-                        .forEach(Bat::remove);
-                bats.clear();
+                removableEntities.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
+                        .forEach(Entity::remove);
+                removableEntities.clear();
             }
         }.runTaskLater(getPlugin().getPlugin(), 59L);
     }

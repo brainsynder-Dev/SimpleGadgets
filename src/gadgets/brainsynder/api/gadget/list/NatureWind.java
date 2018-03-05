@@ -33,6 +33,7 @@ public class NatureWind extends BlockChanger {
                 .withName(String.valueOf(Math.random())).build());
         item.setPickupDelay(Integer.MAX_VALUE);
         item.setVelocity(player.getEyeLocation().getDirection());
+        removableItems.add(item);
 
         SoundMaker.ENTITY_ARROW_SHOOT.playSound(item.getLocation());
         ITrailer<Item> trailer = new Trailer<>();

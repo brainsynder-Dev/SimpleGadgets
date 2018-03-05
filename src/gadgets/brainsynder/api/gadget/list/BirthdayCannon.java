@@ -51,6 +51,7 @@ public class BirthdayCannon extends Gadget {
 
                 StringAPI texture = new StringAPI(textures.get(i));
                 Item item = getPlugin().getEntityUtils().launchItem(player, new SkullMaker().setUrl(texture.toSkinURL()).setName("" + Math.random()).create());
+                removableItems.add(item);
                 SoundMaker.ENTITY_EXPERIENCE_ORB_PICKUP.playSound(player.getLocation());
                 new BukkitRunnable() {
                     @Override
