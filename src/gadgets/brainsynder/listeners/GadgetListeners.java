@@ -36,7 +36,6 @@ public class GadgetListeners implements Listener {
 
     public GadgetListeners(GadgetPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getServer().getPluginManager().registerEvents(this, plugin.getPlugin());
     }
 
     @EventHandler
@@ -134,8 +133,10 @@ public class GadgetListeners implements Listener {
                 (event.getFrom().getBlockZ() != event.getTo().getBlockZ()))) {
 
             User user = plugin.getManager().getUser(player);
+            if (!user.hasGadget()) return;
             Gadget gadget = user.getGadget();
-            if (gadget == null) return;
+            if (!gadget.hasGadgetInfo()) return;
+            if (!gadget.getGadgetInfo().moveMethods()) return;
             gadget.onUserMove(user);
         }
     }
@@ -148,6 +149,10 @@ public class GadgetListeners implements Listener {
             Player player = (Player) e.getEntity().getShooter();
             User user = plugin.getManager().getUser(player);
             if (!user.hasGadget()) return;
+            Gadget gadget = user.getGadget();
+            if (!gadget.hasGadgetInfo()) return;
+            if (!gadget.getGadgetInfo().projectileHit()) return;
+
             Location location;
             if (plugin.getEntityUtils().isValid(e.getHitEntity())) {
                 location = e.getHitEntity().getLocation();
@@ -156,7 +161,6 @@ public class GadgetListeners implements Listener {
             }else{
                 location = e.getEntity().getLocation();
             }
-            Gadget gadget = user.getGadget();
             GadgetProjectileHitEvent event = new GadgetProjectileHitEvent(gadget, e.getEntity());
             Bukkit.getServer().getPluginManager().callEvent(event);
             gadget.onProjectileHit(user, event.getProjectile());

@@ -163,6 +163,15 @@ public abstract class Gadget extends JSONFile {
     @Deprecated
     public abstract ItemBuilder getDefaultItem();
 
+    public boolean hasGadgetInfo () {
+        return getClass().isAnnotationPresent(GadgetInfo.class);
+    }
+
+    public GadgetInfo getGadgetInfo () {
+        if (hasGadgetInfo()) return getClass().getAnnotation(GadgetInfo.class);
+        return null;
+    }
+
     /**
      *
      * @return idName is the Identifier name for the gadget (All lowercase and no spaces)

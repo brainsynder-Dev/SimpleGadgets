@@ -2,6 +2,7 @@ package gadgets.brainsynder.api.gadget.list;
 
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.BlockChanger;
+import gadgets.brainsynder.api.gadget.GadgetInfo;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import simple.brainsynder.math.MathUtils;
 import simple.brainsynder.sound.SoundMaker;
 
+@GadgetInfo(projectileHit = true)
 public class PaintSprayer extends BlockChanger {
     public PaintSprayer(GadgetPlugin plugin) {
         super(plugin, "paint_sprayer");

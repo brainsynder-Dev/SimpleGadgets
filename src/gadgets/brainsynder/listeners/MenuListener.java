@@ -11,6 +11,7 @@
 package gadgets.brainsynder.listeners;
 
 import gadgets.brainsynder.Core;
+import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.menus.GadgetSelector;
@@ -21,7 +22,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MenuListener implements Listener {
+	private GadgetPlugin plugin;
+	private static Map<String, Integer> pageMap = new HashMap<>();
+
+	public MenuListener(GadgetPlugin plugin) {
+		this.plugin = plugin;
+	}
 
 	@EventHandler
 	public void onClick (InventoryClickEvent e) {
@@ -30,7 +40,7 @@ public class MenuListener implements Listener {
 		if (e.getWhoClicked () instanceof Player) {
 			Player player = (Player)e.getWhoClicked ();
 			if (e.getInventory ().getTitle ().startsWith ("Gadgets: ")) {
-                User user = Core.get().getManager().getUser(player);
+                User user = plugin.getManager().getUser(player);
 				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) return;
 
 				int currentPage;
@@ -60,7 +70,7 @@ public class MenuListener implements Listener {
 
 				if (!Core.getSlots().contains(String.valueOf((e.getSlot() + 1)))) return;
 
-				Gadget gadget = Core.get().getManager().getByItem (e.getCurrentItem(), true);
+				Gadget gadget = plugin.getManager().getByItem (e.getCurrentItem(), true);
 				if (gadget == null) return;
 
 				gadget.load(); // This is needed in order for all the gadget details to load

@@ -100,8 +100,8 @@ public class Core extends JavaPlugin implements GadgetPlugin {
             e.printStackTrace();
         }
         CommandManager.registerCommands(this);
-        new GadgetListeners(this);
-        getServer().getPluginManager().registerEvents(new MenuListener(), this);
+        getServer().getPluginManager().registerEvents(new GadgetListeners(this), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(this), this);
     }
 
     public void onDisable() {

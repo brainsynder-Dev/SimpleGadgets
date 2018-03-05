@@ -3,6 +3,7 @@ package gadgets.brainsynder.api.gadget.list;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.event.GadgetListener;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.gadget.GadgetInfo;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import simple.brainsynder.api.ParticleMaker;
 
 import java.util.Arrays;
 
+@GadgetInfo(moveMethods = true)
 public class FireBender extends Gadget implements GadgetListener {
     private boolean isUsing = false;
     public FireBender(GadgetPlugin plugin) {

@@ -2,6 +2,7 @@ package gadgets.brainsynder.api.gadget.list;
 
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.api.gadget.GadgetInfo;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Snowball;
 import simple.brainsynder.api.ParticleMaker;
 import simple.brainsynder.sound.SoundMaker;
 
+@GadgetInfo(projectileHit = true)
 public class ExplosiveSnowball extends Gadget {
     public ExplosiveSnowball(GadgetPlugin plugin) {
         super(plugin, "explosive_snowball");
