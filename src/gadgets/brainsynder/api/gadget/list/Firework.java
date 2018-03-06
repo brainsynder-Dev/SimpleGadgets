@@ -6,6 +6,7 @@ import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class Firework extends Gadget {
     public Firework(GadgetPlugin plugin) {
@@ -19,6 +20,7 @@ public class Firework extends Gadget {
         meta.addEffect(getPlugin().getUtilities().randomEffect());
         meta.setPower(1);
         fw.setFireworkMeta(meta);
+        fw.setMetadata("NODAMAGE", new FixedMetadataValue(getPlugin().getPlugin(), "NODAMAGE"));
     }
 
     @Override

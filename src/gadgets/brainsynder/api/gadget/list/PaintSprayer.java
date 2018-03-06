@@ -35,7 +35,7 @@ public class PaintSprayer extends BlockChanger {
             storage.addBlock(block2);
             Material material = (MathUtils.random(1,2) == 1) ? Material.WOOL : Material.STAINED_CLAY;
             block2.setType(material);
-            block2.setData((byte) MathUtils.random(0,16));
+            block2.setData((byte) MathUtils.random(0,15));
             getPlugin().getUtilities().blockParticles(block2);
             new BukkitRunnable() {
                 @Override

@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import simple.brainsynder.api.ParticleMaker;
@@ -35,11 +36,10 @@ public class Rocket extends Gadget {
     @Override
     public void run(User user) {
         Player p = user.getPlayer();
-
+        p.setMetadata("NOFALL", new FixedMetadataValue(getPlugin().getPlugin(), "NOFALL"));
         Firework firework = getPlugin().getEntityUtils().spawnMob(p.getLocation(), Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
-        fireworkMeta.addEffect(getPlugin().getUtilities().randomEffect());
-        fireworkMeta.setPower(1);
+        fireworkMeta.setPower(2);
         firework.setFireworkMeta(fireworkMeta);
         firework.setPassenger(p);
         removableEntities.add(firework);
@@ -64,7 +64,7 @@ public class Rocket extends Gadget {
                 firework.eject();
                 new ParticleMaker(ParticleMaker.Particle.EXPLOSION_HUGE, 5, 1)
                         .sendToLocation(firework.getLocation());
-                firework.detonate();
+                firework.remove();
             }
         }.runTaskLater(getPlugin().getPlugin(), 20 * 4);
     }

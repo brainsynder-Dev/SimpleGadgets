@@ -60,7 +60,7 @@ public class SheepBomb extends Gadget {
                         double y = 0.5D;
                         double z = -0.5F + (float)(Math.random() * 0.9D);
                         final Item item = p.getWorld().dropItem(sheep.getLocation(), new ItemBuilder(Material.WOOL)
-                                .withName(String.valueOf (Math.random())).withData(MathUtils.random(0,16)).build());
+                                .withName(String.valueOf (Math.random())).withData(MathUtils.random(0,15)).build());
                         item.setPickupDelay(Integer.MAX_VALUE);
                         item.setVelocity((new Vector(x, y, z)));
                         removableItems.add(item);

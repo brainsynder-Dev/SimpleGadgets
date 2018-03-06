@@ -25,6 +25,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import simple.brainsynder.nms.ITitleMessage;
@@ -177,7 +178,8 @@ public class GadgetListeners implements Listener {
         if (!user.hasGadget()) return;
 
         if (e.getItemDrop().getItemStack().isSimilar(user.getGadget().getItem().build())) {
-            e.setCancelled(true);
+            e.getItemDrop().setItemStack(new ItemStack(Material.AIR));
+            //e.setCancelled(true);
             user.removeGadget();
             player.updateInventory();
         }
@@ -209,6 +211,11 @@ public class GadgetListeners implements Listener {
 
     @EventHandler
     private void onDamage(EntityDamageByEntityEvent e) {
+        if (e.getDamager().hasMetadata("NODAMAGE")) {
+            e.setCancelled(true);
+            return;
+        }
+
         if (e.getDamager() instanceof Projectile) {
             Projectile proj = (Projectile) e.getDamager();
             if (proj.hasMetadata("GadgetProj")) {
@@ -242,9 +249,16 @@ public class GadgetListeners implements Listener {
                 if (!gadget.getGadgetInfo().cancelFall()) return;
                 if (!(gadget instanceof Rocket)) return;
                 Rocket rocket = (Rocket) gadget;
-                if (!rocket.isUsing()) return;
-                if (!rocket.isUsing()) return;
-                e.setCancelled(true);
+                if (user.getPlayer().hasMetadata("NOFALL")) {
+                    e.setCancelled(true);
+                    user.getPlayer().removeMetadata("NOFALL", plugin.getPlugin());
+                    return;
+                }
+
+                if (rocket.isUsing()) {
+                    e.setCancelled(true);
+                    return;
+                }
             }
         }
     }

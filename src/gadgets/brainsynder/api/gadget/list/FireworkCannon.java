@@ -7,6 +7,7 @@ import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class FireworkCannon extends Gadget {
                     FireworkMeta meta = fw.getFireworkMeta();
                     meta.addEffect(getPlugin().getUtilities().randomEffect());
                     fw.setFireworkMeta(meta);
+                    fw.setMetadata("NODAMAGE", new FixedMetadataValue(getPlugin().getPlugin(), "NODAMAGE"));
                     new BukkitRunnable() {
                         @Override public void run() {
                             fw.detonate();
@@ -41,6 +43,7 @@ public class FireworkCannon extends Gadget {
                 FireworkMeta meta = fw.getFireworkMeta();
                 meta.addEffect(getPlugin().getUtilities().randomEffect());
                 fw.setFireworkMeta(meta);
+                fw.setMetadata("NODAMAGE", new FixedMetadataValue(getPlugin().getPlugin(), "NODAMAGE"));
                 new BukkitRunnable() {
                     @Override public void run() {
                         fw.detonate();

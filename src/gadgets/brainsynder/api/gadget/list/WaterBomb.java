@@ -40,9 +40,9 @@ public class WaterBomb extends Gadget {
                         .sendToLocation(bukkit.getLocation());
 
                 for(int x1 = 0; x1 <= 16; x1++) {
-                    double x = (double)(-0.5F + (float)(Math.random() * 2.0D));
+                    double x = (double)(-0.5F + (float)(Math.random() * 1.0D));
                     double y = 1.0D;
-                    double z = (double)(-0.5F + (float)(Math.random() * 2.0D));
+                    double z = (double)(-0.5F + (float)(Math.random() * 1.0D));
                     Location eLoc = bukkit.getLocation();
                     World w = eLoc.getWorld();
                     Location bLoc = bukkit.getLocation();

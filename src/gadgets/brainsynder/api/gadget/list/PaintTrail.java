@@ -39,7 +39,7 @@ public class PaintTrail extends BlockChanger {
                 storage.addBlock(block);
                 Material material= (MathUtils.random(1,2) == 1) ? Material.WOOL : Material.STAINED_CLAY;
                 block.setType(material);
-                block.setData((byte) MathUtils.random(0,16));
+                block.setData((byte) MathUtils.random(0,15));
                 getPlugin().getUtilities().blockParticles(block);
                 new BukkitRunnable() {
                     @Override
