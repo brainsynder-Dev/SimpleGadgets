@@ -20,12 +20,12 @@ public class Laser extends Gadget {
     public void loadExtraTags() {
         super.loadExtraTags();
         setDefault("LaunchMobs", true);
-        setDefault("MaxBeamLength", 100);
+        setDefault("length", 100);
     }
 
     @Override
     public void run(User user) {
-        laserbeam(user.getPlayer(), Color.RED, getInteger("MaxBeamLength"), getBoolean("LaunchMobs"));
+        laserbeam(user.getPlayer(), Color.RED, getInteger("length"), getBoolean("LaunchMobs"));
     }
 
     private void laserbeam(LivingEntity user, Color color, int length, boolean pushMobs) {

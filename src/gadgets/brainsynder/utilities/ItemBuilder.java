@@ -86,12 +86,15 @@ public class ItemBuilder {
     }
     public ItemBuilder addLore(String... lore) {
         JSONArray LORE = new JSONArray();
-        if (JSON.containsKey("lore")) {
-            LORE = (JSONArray) JSON.get("lore");
-        }
+        if (JSON.containsKey("lore")) LORE = (JSONArray) JSON.get("lore");
+        List<String> itemLore = new ArrayList<>();
+        if (im.hasLore()) itemLore = im.getLore();
+
         LORE.addAll(Arrays.asList(lore));
         JSON.put("lore", LORE);
-        Arrays.asList(lore).forEach(s -> im.getLore().add(translate(s)));
+        List<String> finalItemLore = itemLore;
+        Arrays.asList(lore).forEach(s -> finalItemLore.add(translate(s)));
+        im.setLore(finalItemLore);
         return this;
     }
     public ItemBuilder clearLore() {
@@ -100,22 +103,19 @@ public class ItemBuilder {
         return this;
     }
     public ItemBuilder removeLore(String lore) {
+        List<String> itemLore = new ArrayList<>();
+        if (im.hasLore()) itemLore = im.getLore();
         if (JSON.containsKey("lore")) {
             JSONArray LORE = (JSONArray) JSON.get("lore");
-            for (Object o : LORE) {
-                if (String.valueOf(o).startsWith(lore)) {
-                    LORE.remove(o);
-                    break;
-                }
-            }
-
+            LORE.stream().filter(o -> String.valueOf(o).startsWith(lore)).forEach(o -> LORE.remove(o));
             if (LORE.isEmpty()) {
                 JSON.remove("lore");
             }else{
                 JSON.put("lore", LORE);
             }
         }
-        im.getLore().remove(translate(lore));
+        itemLore.remove(translate(lore));
+        im.setLore(itemLore);
         return this;
     }
 
@@ -128,24 +128,16 @@ public class ItemBuilder {
 
     public ItemBuilder withEnchant(Enchantment enchant, int level) {
         JSONArray ENCHANTS = new JSONArray();
-        if (JSON.containsKey("enchants")) {
-            ENCHANTS = (JSONArray) JSON.get("enchants");
-        }
+        if (JSON.containsKey("enchants")) ENCHANTS = (JSONArray) JSON.get("enchants");
         ENCHANTS.add(enchant.getName()+" ~~ "+level);
         JSON.put("enchants", ENCHANTS);
-
         is.addEnchantment(enchant, level);
         return this;
     }
     public ItemBuilder removeEnchant(Enchantment enchant) {
         if (JSON.containsKey("enchants")) {
             JSONArray ENCHANTS = (JSONArray) JSON.get("enchants");
-            for (Object o : ENCHANTS) {
-                if (String.valueOf(o).startsWith(enchant.getName())) {
-                    ENCHANTS.remove(o);
-                    break;
-                }
-            }
+            ENCHANTS.stream().filter(o -> String.valueOf(o).startsWith(enchant.getName())).forEach(o -> ENCHANTS.remove(o));
             if (ENCHANTS.isEmpty()) {
                 JSON.remove("enchants");
             }else{
@@ -159,9 +151,7 @@ public class ItemBuilder {
 
     public ItemBuilder withFlag(ItemFlag flag) {
         JSONArray FLAGS = new JSONArray();
-        if (JSON.containsKey("flags")) {
-            FLAGS = (JSONArray) JSON.get("flags");
-        }
+        if (JSON.containsKey("flags")) FLAGS = (JSONArray) JSON.get("flags");
         FLAGS.add(flag.name());
         JSON.put("flags", FLAGS);
         im.addItemFlags(flag);
@@ -170,12 +160,8 @@ public class ItemBuilder {
     public ItemBuilder removeFlag(ItemFlag flag) {
         if (JSON.containsKey("flags")) {
             JSONArray FLAGS = (JSONArray) JSON.get("flags");
-            for (Object o : FLAGS) {
-                if (String.valueOf(o).equals(flag.name())) {
-                    FLAGS.remove(o);
-                    break;
-                }
-            }
+            FLAGS.stream().filter(o -> String.valueOf(o).equals(flag.name())).forEach(o -> FLAGS.remove(o));
+
             if (FLAGS.isEmpty()) {
                 JSON.remove("flags");
             }else{

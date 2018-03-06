@@ -27,14 +27,14 @@ public class GravitySurge extends Gadget {
     @Override
     public void loadExtraTags() {
         super.loadExtraTags();
-        setDefault("CooldownTime", 15);
-        setDefault("Radius", 5);
-        setDefault("RightClickBlock", "&cRight Click a Block");
+        setDefault("cooldown", 15);
+        setDefault("radius", 5);
+        setDefault("error", "&cRight Click a Block");
     }
 
     @Override
     public void run(User user) {
-        user.getPlayer().sendMessage(getString("RightClickBlock", true));
+        user.getPlayer().sendMessage(getString("error", true));
         if (Cooldown.hasCooldown(user.getPlayer(), this, false)) {
             Cooldown.removeCooldown(user.getPlayer());
         }
@@ -46,7 +46,7 @@ public class GravitySurge extends Gadget {
         if (b.getType() == Material.AIR) return;
         Player p = user.getPlayer();
 
-        List<Block> blocks = getPlugin().getBlockUtils().getBlocksInRadius(b.getLocation(), getInteger("Radius"), false);
+        List<Block> blocks = getPlugin().getBlockUtils().getBlocksInRadius(b.getLocation(), getInteger("radius"), false);
         for (Block block : blocks) {
             if ((block.getRelative(BlockFace.UP) == null) || (block.getRelative(BlockFace.UP).getType() == Material.AIR)) {
                 if (block.getLocation().getBlockY() == block.getLocation().getBlockY()) {
