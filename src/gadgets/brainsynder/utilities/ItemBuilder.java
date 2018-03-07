@@ -43,8 +43,8 @@ public class ItemBuilder {
 
         int amount = 1;
         if (json.containsKey("amount")) amount = Integer.parseInt(String.valueOf(json.get("amount")));
-
-        ItemBuilder builder = new ItemBuilder(Material.valueOf(String.valueOf(json.get("material"))), amount);
+        Material material = Material.valueOf(String.valueOf(json.get("material")));
+        ItemBuilder builder = new ItemBuilder(material, amount);
 
         if (json.containsKey("name")) builder.withName(String.valueOf(json.get("name")));
         if (json.containsKey("lore")) {
@@ -54,7 +54,7 @@ public class ItemBuilder {
         }
         if (json.containsKey("data")) builder.withData(Integer.parseInt(String.valueOf(json.get("data"))));
 
-        if (json.containsKey("enchants")) {
+        if (json.containsKey("enchants") && (material.name().contains("SKULL"))) {
             JSONArray array = (JSONArray) json.get("enchants");
             for (Object o : array) {
                 try {
@@ -229,7 +229,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setTexture (String textureURL) {
-        if (textureURL.startsWith("http")) textureURL = Base64Wrapper.encodeString(textureURL);
+        if (textureURL.startsWith("http")) textureURL = Base64Wrapper.encodeString("{\"textures\":{\"SKIN\":{\"url\":\"" + textureURL + "\"}}}");
 
         JSONObject SKULL = (JSONObject) JSON.getOrDefault("skullData", new JSONObject());
         SKULL.put("texture", textureURL);
