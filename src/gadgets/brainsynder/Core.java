@@ -148,6 +148,8 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         manager.registerGadget(new SheepBomb(this));
         manager.registerGadget(new TrailBlazer(this));
         manager.registerGadget(new WaterBomb(this));
+        manager.registerGadget(new Pee(this));
+        manager.registerGadget(new ChickenBlaster(this));
     }
 
     public static Core get() {
