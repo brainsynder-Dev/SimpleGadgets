@@ -1,6 +1,5 @@
 package gadgets.brainsynder.api.gadget.list;
 
-import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
@@ -56,7 +55,7 @@ public class MelonBlaster extends Gadget {
 
                     Item fb = p.getWorld().dropItem(it.getLocation(), is);
                     fb.setVelocity(new Vector(x, y, z));
-                    fb.setMetadata("eatable", new FixedMetadataValue(Core.get(), "eatable"));
+                    fb.setMetadata("eatable", new FixedMetadataValue(getPlugin().getPlugin(), "eatable"));
                     removableItems.add(fb);
                 }
                 it.remove();
@@ -65,9 +64,9 @@ public class MelonBlaster extends Gadget {
                     public void run() {
                         clearItems();
                     }
-                }.runTaskLater(Core.get (), 20*20);
+                }.runTaskLater(getPlugin().getPlugin(), 20*20);
             }
-        }.runTaskLater(Core.get(), 40L);
+        }.runTaskLater(getPlugin().getPlugin(), 40L);
     }
 
     @Override

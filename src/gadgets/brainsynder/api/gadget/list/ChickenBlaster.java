@@ -1,6 +1,5 @@
 package gadgets.brainsynder.api.gadget.list;
 
-import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
@@ -65,9 +64,9 @@ public class ChickenBlaster extends Gadget {
                     public void run() {
                         clearItems();
                     }
-                }.runTaskLater(Core.get(), 45);
+                }.runTaskLater(getPlugin().getPlugin(), 45);
             }
-        }.runTaskLater(Core.get(), 9);
+        }.runTaskLater(getPlugin().getPlugin(), 9);
     }
 
     @Override

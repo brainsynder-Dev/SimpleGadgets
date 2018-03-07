@@ -1,6 +1,5 @@
 package gadgets.brainsynder.api.gadget.list;
 
-import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
@@ -62,10 +61,10 @@ public class BirthdayCannon extends Gadget {
                         SoundMaker.ENTITY_FIREWORK_SHOOT.playSound(player.getLocation());
                         item.remove();
                     }
-                }.runTaskLaterAsynchronously(Core.get(), 15);
+                }.runTaskLaterAsynchronously(getPlugin().getPlugin(), 15);
                 i++;
             }
-        }.runTaskTimer(Core.get(), 0, 10);
+        }.runTaskTimer(getPlugin().getPlugin(), 0, 10);
     }
 
     @Override

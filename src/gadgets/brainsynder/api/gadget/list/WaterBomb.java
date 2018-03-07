@@ -1,6 +1,5 @@
 package gadgets.brainsynder.api.gadget.list;
 
-import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
@@ -47,7 +46,7 @@ public class WaterBomb extends Gadget {
                     World w = eLoc.getWorld();
                     Location bLoc = bukkit.getLocation();
                     FallingBlock fallingBlock = w.spawnFallingBlock(bLoc, new MaterialData(Material.WATER));
-                    fallingBlock.setMetadata("GadgetFB", new FixedMetadataValue(Core.get(), "GadgetFB"));
+                    fallingBlock.setMetadata("GadgetFB", new FixedMetadataValue(getPlugin().getPlugin(), "GadgetFB"));
                     fallingBlock.setDropItem(false);
                     fallingBlock.setVelocity(new Vector(x, y, z));
                     removableEntities.add(fallingBlock);
@@ -55,7 +54,7 @@ public class WaterBomb extends Gadget {
 
                 bukkit.remove();
             }
-        }.runTaskLater (Core.get (), 40);
+        }.runTaskLater (getPlugin().getPlugin(), 40);
     }
 
     @Override
