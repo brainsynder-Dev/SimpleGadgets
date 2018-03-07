@@ -54,7 +54,7 @@ public class ItemBuilder {
         }
         if (json.containsKey("data")) builder.withData(Integer.parseInt(String.valueOf(json.get("data"))));
 
-        if (json.containsKey("enchants") && (material.name().contains("SKULL"))) {
+        if (json.containsKey("enchants") && (!material.name().contains("SKULL"))) {
             JSONArray array = (JSONArray) json.get("enchants");
             for (Object o : array) {
                 try {
