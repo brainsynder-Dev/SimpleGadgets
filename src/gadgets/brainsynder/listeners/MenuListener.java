@@ -14,20 +14,18 @@ import gadgets.brainsynder.Core;
 import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.user.User;
+import gadgets.brainsynder.items.CustomItem;
 import gadgets.brainsynder.menus.GadgetSelector;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MenuListener implements Listener {
 	private GadgetPlugin plugin;
-	private static Map<String, Integer> pageMap = new HashMap<>();
 
 	public MenuListener(GadgetPlugin plugin) {
 		this.plugin = plugin;
@@ -44,32 +42,22 @@ public class MenuListener implements Listener {
                 User user = plugin.getManager().getUser(player);
 				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) return;
 
-				int currentPage;
-				String[] menuArgs = e.getInventory ().getTitle ().split (" ");
-				String[] pageArgs = menuArgs[ 1 ].split ("/");
-				try {
-					currentPage = Integer.parseInt (pageArgs[ 0 ]);
-				}
-				catch ( NumberFormatException ignored ) {
-					currentPage = 1;
-				}
+				int currentPage = plugin.getSelectionMenu().getPage(player);
 				e.setCancelled (true);
+				e.setResult(Event.Result.DENY);
 
-				if (e.getSlot() == (Core.get().getRemoveGadget().getSlot())) {
-					if (user.hasGadget())
-						user.removeGadget();
-					return;
-				}
-				if ((e.getSlot() == (Core.get().getBack().getSlot()))) {
-					GadgetSelector.openMenu (player, ( currentPage - 1 ));
-					return;
-				}
-				if ((e.getSlot() == (Core.get().getNext().getSlot()))) {
-					GadgetSelector.openMenu (player, ( currentPage + 1 ));
-					return;
-				}
+				CustomItem item = plugin.getItemManager().getItem(e.getCurrentItem());
 
-				if (!Core.getSlots().contains(String.valueOf((e.getSlot() + 1)))) return;
+				if (item != null) {
+					item.onClick(user, currentPage);
+					return;
+				}
+				// If the first check fails... then get the CustomItem from the Slot number
+				item = plugin.getItemManager().getItem(e.getSlot());
+				if (item != null) {
+					item.onClick(user, currentPage);
+					return;
+				}
 
 				Gadget gadget = plugin.getManager().getByItem (e.getCurrentItem(), true);
 				if (gadget == null) return;

@@ -10,8 +10,9 @@
 
 package gadgets.brainsynder.menus;
 
-import gadgets.brainsynder.Core;
+import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.gadget.Gadget;
+import gadgets.brainsynder.items.CustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,10 +22,20 @@ import org.bukkit.inventory.ItemStack;
 import simple.brainsynder.api.ItemMaker;
 import simple.brainsynder.storage.IStorage;
 
-public class GadgetSelector {
+import java.util.HashMap;
+import java.util.Map;
 
-    public static void openMenu(Player player, int page) {
-        Inventory inv = Bukkit.createInventory(new Handler (), 54, "Gadgets: " + page + "/" + Core.get().getPages().totalPages());
+public class GadgetSelector {
+    private GadgetPlugin plugin;
+    private static Map<String, Integer> pageMap = new HashMap<>();
+
+    public GadgetSelector (GadgetPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void openMenu(Player player, int page) {
+        pageMap.put(player.getUniqueId().toString(), page);
+        Inventory inv = Bukkit.createInventory(new Handler (), 54, "Gadgets: " + page + "/" + plugin.getPages().totalPages());
         for (int i = 0; i < (inv.getSize()); i++) {
             ItemMaker maker = new ItemMaker(Material.STAINED_GLASS_PANE, (byte) 8);
             maker.setName(" ");
@@ -32,7 +43,7 @@ public class GadgetSelector {
         }
 
 
-        IStorage<String> slots = Core.getSlots().copy();
+        IStorage<String> slots = plugin.getSlots().copy();
         while (slots.hasNext()) {
             int i = -1;
             try {
@@ -43,19 +54,20 @@ public class GadgetSelector {
                 inv.setItem((i - 1), new ItemStack(Material.AIR));
             }
         }
-        inv.setItem(Core.get().getRemoveGadget().getSlot(), Core.get().getRemoveGadget().getItem());
-        if (Core.get().getPages().totalPages() > page) {
-            inv.setItem(Core.get().getNext().getSlot(), Core.get().getNext().getItem());
-        }
-        if (page > 1) {
-            inv.setItem(Core.get().getBack().getSlot(), Core.get().getBack().getItem());
+
+        for (CustomItem item : plugin.getItemManager().getItems()) {
+            if (item.addToInventory(page)) inv.setItem(item.getSlot(), item.getItemBuilder().build());
         }
 
-        for (Gadget gadget : Core.get().getPages().getPage(page)) {
+        for (Gadget gadget : plugin.getPages().getPage(page)) {
             inv.addItem(gadget.getItem().build());
         }
 
         player.openInventory(inv);
+    }
+
+    public int getPage (Player player) {
+        return pageMap.getOrDefault(player.getUniqueId().toString(), 1);
     }
 
     public static class Handler implements InventoryHolder{

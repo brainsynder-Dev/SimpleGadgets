@@ -73,6 +73,13 @@ public class ItemBuilder {
             }
         }
 
+        if (json.containsKey("skullData")) {
+            JSONObject skull = (JSONObject) json.get("skullData");
+
+            if (skull.containsKey("texture")) builder.setTexture(String.valueOf(skull.get("texture")));
+            if (skull.containsKey("owner")) builder.setOwner(String.valueOf(skull.get("owner")));
+        }
+
         return builder;
     }
 

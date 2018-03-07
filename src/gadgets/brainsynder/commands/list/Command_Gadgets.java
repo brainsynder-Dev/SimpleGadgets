@@ -11,14 +11,16 @@
 package gadgets.brainsynder.commands.list;
 
 import gadgets.brainsynder.Core;
-import gadgets.brainsynder.menus.GadgetSelector;
+import gadgets.brainsynder.api.GadgetPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import simple.brainsynder.commands.BaseCommand;
 
 public class Command_Gadgets extends BaseCommand {
-    public Command_Gadgets() {
+    private GadgetPlugin plugin;
+    public Command_Gadgets(GadgetPlugin plugin) {
         super("gadgets");
+        this.plugin = plugin;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class Command_Gadgets extends BaseCommand {
 
     @Override
     public void playerSendCommandEvent(Player player, String[] args) {
-        GadgetSelector.openMenu (player, 1);
+        plugin.getSelectionMenu().openMenu (player, 1);
         player.sendMessage (Core.getLanguage().getString("Messages.OpenMenu", true));
     }
 }

@@ -15,11 +15,13 @@ import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.gadget.list.*;
 import gadgets.brainsynder.commands.CommandManager;
 import gadgets.brainsynder.files.Language;
-import gadgets.brainsynder.items.BackLoader;
-import gadgets.brainsynder.items.NextLoader;
-import gadgets.brainsynder.items.RemoveLoader;
+import gadgets.brainsynder.items.ItemManager;
+import gadgets.brainsynder.items.list.NextPage;
+import gadgets.brainsynder.items.list.PreviousPage;
+import gadgets.brainsynder.items.list.RemoveGadget;
 import gadgets.brainsynder.listeners.GadgetListeners;
 import gadgets.brainsynder.listeners.MenuListener;
+import gadgets.brainsynder.menus.GadgetSelector;
 import gadgets.brainsynder.utilities.BlockUtils;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
@@ -34,32 +36,37 @@ import simple.brainsynder.storage.StorageList;
 import simple.brainsynder.utils.ObjectPager;
 import simple.brainsynder.utils.SpigotPluginHandler;
 
-import java.io.File;
-
 public class Core extends JavaPlugin implements GadgetPlugin {
     public ObjectPager<Gadget> pages;
     private static Core instance;
     private static Language language;
-    public static IStorage<String> slots;
-
-    private RemoveLoader removeGadget;
-    private BackLoader back;
-    private NextLoader next;
+    public IStorage<String> slots;
 
     private GadgetManager manager;
     private Utils utilities;
     private EntityUtils entityUtils;
     private BlockUtils blockUtils;
     private VelocityUtils velocityUtils;
-
-    private File itemsFile = new File(getDataFolder().toString() + "/Items/");
+    private ItemManager itemManager;
+    private GadgetSelector gadgetSelector;
 
     public static Language getLanguage() {
         return Core.language;
     }
 
-    public static IStorage<String> getSlots() {
-        return Core.slots;
+    @Override
+    public IStorage<String> getSlots() {
+        return slots;
+    }
+
+    @Override
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
+
+    @Override
+    public GadgetSelector getSelectionMenu() {
+        return gadgetSelector;
     }
 
     public void onEnable() {
@@ -94,12 +101,14 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         if (pages == null) {
             pages = new ObjectPager<>(slots.getSize());
         }
-        removeGadget = new RemoveLoader(new File(itemsFile, "RemoveGadgetItem.json"));
-        next = new NextLoader(new File(itemsFile, "NextPageItem.json"));
-        back = new BackLoader(new File(itemsFile, "PreviousPageItem.json"));
-        removeGadget.save();
-        next.save();
-        back.save();
+
+        itemManager = new ItemManager();
+        itemManager.register(new NextPage(this));
+        itemManager.register(new PreviousPage(this));
+        itemManager.register(new RemoveGadget(this));
+
+        gadgetSelector = new GadgetSelector(this);
+
         try {
             registerGadgets();
         } catch (GadgetRegisterException e) {
@@ -111,9 +120,6 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     }
 
     public void onDisable() {
-        removeGadget.save();
-        next.save();
-        back.save();
         if (Bukkit.getOnlinePlayers().size() != 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 manager.getUser(player).removeGadget();
@@ -190,17 +196,5 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     @Override
     public VelocityUtils getVelocityUtils() {
         return velocityUtils;
-    }
-
-    public RemoveLoader getRemoveGadget() {
-        return this.removeGadget;
-    }
-
-    public BackLoader getBack() {
-        return this.back;
-    }
-
-    public NextLoader getNext() {
-        return this.next;
     }
 }

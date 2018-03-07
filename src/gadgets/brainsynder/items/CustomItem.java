@@ -10,14 +10,19 @@ import java.io.File;
 public abstract class CustomItem extends JSONFile {
     private ItemBuilder _BUILDER_;
     private int _SLOT_;
+    private String name;
+    private GadgetPlugin plugin;
 
     public CustomItem(GadgetPlugin plugin, String name) {
         super(new File(new File(plugin.getPlugin().getDataFolder().toString()+File.separator+"Items"), name+".json"));
+        this.name = name;
+        this.plugin = plugin;
     }
 
     @Deprecated
     public CustomItem(File file) {
         super(file);
+        name = file.getName().replace(".json", "");
     }
 
     @Override
@@ -33,11 +38,19 @@ public abstract class CustomItem extends JSONFile {
     }
 
     public int getSlot() {
-        return _SLOT_;
+        return _SLOT_-1;
+    }
+
+    public GadgetPlugin getPlugin() {
+        return plugin;
     }
 
     public ItemBuilder getItemBuilder() {
         return _BUILDER_;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void onClick (User user){
@@ -47,9 +60,13 @@ public abstract class CustomItem extends JSONFile {
         onClick(user);
     }
 
-    @Deprecated
-    abstract int getDefaultSlot ();
+    public boolean addToInventory (int page) {
+        return true;
+    }
 
     @Deprecated
-    abstract ItemBuilder getDefaultItem ();
+    public abstract int getDefaultSlot();
+
+    @Deprecated
+    public abstract ItemBuilder getDefaultItem ();
 }
