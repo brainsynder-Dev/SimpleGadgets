@@ -39,6 +39,7 @@ public class MenuListener implements Listener {
 
 		if (e.getWhoClicked () instanceof Player) {
 			Player player = (Player)e.getWhoClicked ();
+			if (!(e.getInventory().getHolder() instanceof GadgetSelector.Handler)) return;
 			if (e.getInventory ().getTitle ().startsWith ("Gadgets: ")) {
                 User user = plugin.getManager().getUser(player);
 				if (e.getCurrentItem () == null || e.getCurrentItem ().getType () == Material.AIR) return;

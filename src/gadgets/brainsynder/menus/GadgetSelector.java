@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import simple.brainsynder.api.ItemMaker;
 import simple.brainsynder.storage.IStorage;
@@ -23,7 +24,7 @@ import simple.brainsynder.storage.IStorage;
 public class GadgetSelector {
 
     public static void openMenu(Player player, int page) {
-        Inventory inv = Bukkit.createInventory(null, 54, "Gadgets: " + page + "/" + Core.get().getPages().totalPages());
+        Inventory inv = Bukkit.createInventory(new Handler (), 54, "Gadgets: " + page + "/" + Core.get().getPages().totalPages());
         for (int i = 0; i < (inv.getSize()); i++) {
             ItemMaker maker = new ItemMaker(Material.STAINED_GLASS_PANE, (byte) 8);
             maker.setName(" ");
@@ -55,5 +56,12 @@ public class GadgetSelector {
         }
 
         player.openInventory(inv);
+    }
+
+    public static class Handler implements InventoryHolder{
+        @Override
+        public Inventory getInventory() {
+            return null;
+        }
     }
 }
