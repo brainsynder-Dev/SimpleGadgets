@@ -1,19 +1,24 @@
 package gadgets.brainsynder.utilities;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import simple.brainsynder.reflection.FieldAccessor;
+import simple.brainsynder.utils.Base64Wrapper;
+import simple.brainsynder.utils.Reflection;
+import simple.brainsynder.utils.Valid;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("ALL")
 public class ItemBuilder {
@@ -203,6 +208,70 @@ public class ItemBuilder {
         return is;
     }
 
+    public ItemBuilder setOwner (String owner) {
+        JSONObject SKULL = (JSONObject) JSON.getOrDefault("skullData", new JSONObject());
+        SKULL.put("owner", owner);
+        JSON.put("skullData", SKULL);
+
+        if ((is.getType() == Material.SKULL_ITEM) && (is.getDurability() == 3)) {
+            SkullMeta meta = (SkullMeta) im;
+            meta.setOwner(owner);
+            im = meta;
+        }
+        return this;
+    }
+
+    public ItemBuilder setTexture (String textureURL) {
+        if (textureURL.startsWith("http")) textureURL = Base64Wrapper.encodeString(textureURL);
+
+        JSONObject SKULL = (JSONObject) JSON.getOrDefault("skullData", new JSONObject());
+        SKULL.put("texture", textureURL);
+        JSON.put("skullData", SKULL);
+
+        if ((is.getType() == Material.SKULL_ITEM) && (is.getDurability() == 3)) {
+            SkullMeta meta = (SkullMeta) im;
+            im = applyTextureToMeta(meta, createProfile(textureURL));
+        }
+        return this;
+    }
+
+    public boolean isSimilar(ItemStack check) {
+        List<Boolean> values = new ArrayList<>();
+        if (check == null) return false;
+        ItemStack main = build();
+        if (main.getType() == check.getType()) {
+            if (check.hasItemMeta() && main.hasItemMeta()) {
+                ItemMeta mainMeta = main.getItemMeta();
+                ItemMeta checkMeta = check.getItemMeta();
+                if (mainMeta.hasDisplayName() && checkMeta.hasDisplayName()) {
+                    values.add(mainMeta.getDisplayName().equals(checkMeta.getDisplayName()));
+                }
+
+                if (mainMeta.hasLore() && checkMeta.hasLore()) {
+                    values.add(mainMeta.getLore().equals(checkMeta.getLore()));
+                }
+
+                if (mainMeta.hasEnchants() && checkMeta.hasEnchants()) {
+                    values.add(mainMeta.getEnchants().equals(checkMeta.getEnchants()));
+                }
+
+                if ((mainMeta instanceof SkullMeta) && (checkMeta instanceof SkullMeta)) {
+                    SkullMeta mainSkullMeta = (SkullMeta) mainMeta;
+                    SkullMeta checkSkullMeta = (SkullMeta) checkMeta;
+
+                    if (mainSkullMeta.hasOwner() && checkSkullMeta.hasOwner()) {
+                        values.add(mainSkullMeta.getOwner().equals(checkSkullMeta.getOwner()));
+                    }
+                    values.add(getTexture(getGameProfile(mainSkullMeta)).equals(getTexture(getGameProfile(checkSkullMeta))));
+                }
+
+                if (!values.isEmpty()) return !values.contains(false);
+            }
+        }
+
+        return main.isSimilar(check);
+    }
+
     private String translate(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
@@ -210,5 +279,53 @@ public class ItemBuilder {
         ArrayList<String> newLore = new ArrayList<>();
         message.forEach(msg -> newLore.add(translate(msg)));
         return newLore;
+    }
+
+    private GameProfile createProfile(String data) {
+        Valid.notNull(data, "data can not be null");
+
+        JSONObject SKULL = (JSONObject) JSON.getOrDefault("skullData", new JSONObject());
+        try {
+            GameProfile profile = new GameProfile(UUID.randomUUID(), String.valueOf(SKULL.getOrDefault("owner", "Steve")));
+            PropertyMap propertyMap = profile.getProperties();
+            Property property = new Property("textures", data);
+            propertyMap.put("textures", property);
+            return profile;
+        } catch (Exception var5) {
+            var5.printStackTrace();
+            return null;
+        }
+    }
+
+    private SkullMeta applyTextureToMeta(SkullMeta meta, GameProfile profile) {
+        Valid.notNull(meta, "meta cannot be null");
+        Valid.notNull(profile, "profile cannot be null");
+        Class craftMetaSkull = Reflection.getCBCClass("inventory.CraftMetaSkull");
+        Class c = craftMetaSkull.cast(meta).getClass();
+        FieldAccessor field = FieldAccessor.getField(c, "profile", GameProfile.class);
+        field.set(meta, profile);
+        return meta;
+    }
+
+    private GameProfile getGameProfile(SkullMeta meta) {
+        Valid.notNull(meta, "meta cannot be null");
+        Class craftMetaSkull = Reflection.getCBCClass("inventory.CraftMetaSkull");
+        Class c = craftMetaSkull.cast(meta).getClass();
+        FieldAccessor<GameProfile> field = FieldAccessor.getField(c, "profile", GameProfile.class);
+        return field.get(meta);
+    }
+
+    private String getTexture (GameProfile profile) {
+        PropertyMap propertyMap = profile.getProperties();
+        Collection<Property> properties = propertyMap.get("textures");
+        String text = "";
+
+        for (Property property : properties) {
+            if (property.getName().equals("textures")) {
+                text = property.getValue();
+                break;
+            }
+        }
+        return text;
     }
 }

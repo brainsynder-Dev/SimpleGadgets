@@ -23,6 +23,7 @@ import gadgets.brainsynder.listeners.MenuListener;
 import gadgets.brainsynder.utilities.BlockUtils;
 import gadgets.brainsynder.utilities.EntityUtils;
 import gadgets.brainsynder.utilities.Utils;
+import gadgets.brainsynder.utilities.VelocityUtils;
 import gadgets.brainsynder.utilities.errors.GadgetRegisterException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,13 +41,17 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     private static Core instance;
     private static Language language;
     public static IStorage<String> slots;
+
     private RemoveLoader removeGadget;
     private BackLoader back;
     private NextLoader next;
+
     private GadgetManager manager;
     private Utils utilities;
     private EntityUtils entityUtils;
     private BlockUtils blockUtils;
+    private VelocityUtils velocityUtils;
+
     private File itemsFile = new File(getDataFolder().toString() + "/Items/");
 
     public static Language getLanguage() {
@@ -81,6 +86,7 @@ public class Core extends JavaPlugin implements GadgetPlugin {
         language = new Language(this);
         language.loadDefaults();
         utilities = new Utils(this);
+        velocityUtils = new VelocityUtils(this);
         entityUtils = new EntityUtils(this);
         blockUtils = new BlockUtils();
         manager = new GadgetManager(this);
@@ -179,6 +185,11 @@ public class Core extends JavaPlugin implements GadgetPlugin {
     @Override
     public BlockUtils getBlockUtils() {
         return blockUtils;
+    }
+
+    @Override
+    public VelocityUtils getVelocityUtils() {
+        return velocityUtils;
     }
 
     public RemoveLoader getRemoveGadget() {
