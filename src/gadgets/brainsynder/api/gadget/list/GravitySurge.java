@@ -73,7 +73,6 @@ public class GravitySurge extends Gadget {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            //if (getPlugin().getEntityUtils().isValid(falling)) falling.remove();
                             task.cancel();
                         }
                     }.runTaskLaterAsynchronously(getPlugin().getPlugin(), 50);

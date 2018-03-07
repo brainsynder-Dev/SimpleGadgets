@@ -15,14 +15,12 @@ import gadgets.brainsynder.api.GadgetPlugin;
 import gadgets.brainsynder.api.user.User;
 import gadgets.brainsynder.files.JSONFile;
 import gadgets.brainsynder.utilities.ItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,18 +93,8 @@ public abstract class Gadget extends JSONFile {
      */
     public void onRemove () {
         removed = true;
-        if (!removableItems.isEmpty()) {
-            removableItems.stream()
-                    .filter(item -> getPlugin().getEntityUtils().isValid(item))
-                    .forEach(Item::remove);
-            removableItems.clear();
-        }
-        if (!removableEntities.isEmpty()) {
-            removableEntities.stream()
-                    .filter(entity -> getPlugin().getEntityUtils().isValid(entity))
-                    .forEach(Entity::remove);
-            removableEntities.clear();
-        }
+        clearEntities();
+        clearItems();
     }
 
     /**
@@ -180,197 +168,19 @@ public abstract class Gadget extends JSONFile {
         return this.idName;
     }
 
-    //TODO: Make this its own class, and redo the code to fit the new system.
-    public static class Listeners implements Listener {
-        public Listeners() {
-            Bukkit.getServer().getPluginManager().registerEvents(this, Core.get());
-        }
+    protected void clearItems () {
+        if (removableItems.isEmpty()) return;
+        removableItems.stream()
+                .filter(item -> getPlugin().getEntityUtils().isValid(item))
+                .forEach(Item::remove);
+        removableItems.clear();
+    }
 
-        /*
-        @EventHandler
-        private void onSpawn(EntitySpawnEvent e) {
-            if (e.isCancelled()) {
-                if (spawnMe && e.getEntity().hasMetadata("Spawnable")) {
-                    e.setCancelled(false);
-                    spawnMe = false;
-                }
-            }
-        }
-
-        @EventHandler
-        private void onBlockBreak(BlockBreakEvent e) {
-            if (e.getBlock().hasMetadata("GadgetNoBlockBreak"))
-                e.setCancelled(true);
-        }
-
-        @EventHandler
-        public void pick(PlayerPickupItemEvent e) {
-            if (e.getItem().hasMetadata("takeable")) e.setCancelled(true);
-            if (e.getItem().hasMetadata("eatable")) {
-                e.setCancelled(true);
-                SoundPlayer.playSound(SoundMaker.ENTITY_GENERIC_EAT, e.getItem().getLocation());
-                e.getItem().remove();
-                e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 1));
-                return;
-            }
-            if (e.getItem().hasMetadata("banana")) {
-                e.setCancelled(true);
-                SoundPlayer.playSound(SoundMaker.BLOCK_TRIPWIRE_CLICK_ON, e.getItem().getLocation());
-                e.getItem().remove();
-                ITitleMessage message = Reflection.getTitleMessage();
-                message.sendMessage(e.getPlayer(), 0, 1, 0, "§e§lBANANA!");
-                return;
-            }
-        }
-
-        @EventHandler
-        public void pick(InventoryPickupItemEvent e) {
-            if ((e.getItem().hasMetadata("takeable")) || (e.getItem().hasMetadata("eatable"))) e.setCancelled(true);
-        }
-
-        @EventHandler
-        public void onBlockChangeState(EntityChangeBlockEvent event) {
-            if (event.getEntity().hasMetadata("GadgetFB")) {
-                event.setCancelled(true);
-                FallingBlock fb = (FallingBlock) event.getEntity();
-                fb.getWorld().spigot().playEffect(fb.getLocation(), Effect.STEP_SOUND, fb.getBlockId(), fb.getBlockData(), 0.0F, 0.0F, 0.0F, 0.0F, 1, 32);
-                event.getEntity().remove();
-            }
-        }
-
-        @EventHandler
-        private void onInteract(PlayerInteractEvent e) {
-            if ((e.getAction() == Action.LEFT_CLICK_BLOCK) || (e.getAction() == Action.LEFT_CLICK_AIR)) {
-                return;
-            }
-            Player player = e.getPlayer();
-            if (player.getItemInHand() == null) {
-                return;
-            }
-            if (player.getItemInHand().getType() == Material.AIR) {
-                return;
-            }
-            if (!Variables.gadgetMap.containsKey(player.getName())) {
-                return;
-            }
-            Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-            if (!Variables.isGadgetItem(gadget, player.getItemInHand())) {
-                return;
-            }
-            e.setCancelled(true);
-            GadgetActivateEvent event = new GadgetActivateEvent(gadget, player);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-            if (event.isCancelled())
-                return;
-            if (!Cooldown.hasCooldown(player, gadget)) {
-                Cooldown.giveCooldown(player, gadget);
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    gadget.onBlockClick(player, e.getClickedBlock());
-                    return;
-                }
-                gadget.run(player);
-            }
-        }
-
-        @EventHandler
-        public void onMove(PlayerMoveEvent event) {
-            Player player = event.getPlayer();
-            if (((event.getFrom().getBlockX() != event.getTo().getBlockX()) ||
-                    (event.getFrom().getBlockY() != event.getTo().getBlockY()) ||
-                    (event.getFrom().getBlockZ() != event.getTo().getBlockZ()))) {
-                if (!Variables.gadgetMap.containsKey(player.getName())) {
-                    return;
-                }
-                Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-                if (gadget == null) {
-                    return;
-                }
-                gadget.onUserMove(player);
-            }
-        }
-
-        @EventHandler
-        private void onProjHit(ProjectileHitEvent e) {
-            if (!e.getEntity().hasMetadata("GadgetProj")) {
-                return;
-            }
-            if (e.getEntity().getShooter() instanceof Player) {
-                Player player = (Player) e.getEntity().getShooter();
-                if (!Variables.gadgetMap.containsKey(player.getName())) {
-                    return;
-                }
-                Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-                if (gadget == null) {
-                    return;
-                }
-                GadgetProjectileHitEvent event = new GadgetProjectileHitEvent(gadget, e.getEntity());
-                Bukkit.getServer().getPluginManager().callEvent(event);
-                gadget.onProjectileHit(event.getProjectile());
-                event.getProjectile().remove();
-            }
-        }
-
-        @EventHandler
-        private void onDrop(PlayerDropItemEvent e) {
-            Player player = e.getPlayer();
-            if (!Variables.gadgetMap.containsKey(player.getName())) {
-                return;
-            }
-            Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-            ItemStack dropped = e.getItemDrop().getItemStack();
-            if (dropped.isSimilar(gadget.getItemStack())) {
-                e.setCancelled(true);
-                Variables.removeGadget(player);
-            }
-        }
-
-        @EventHandler
-        private void onLeave(PlayerQuitEvent e) {
-            Player player = e.getPlayer();
-            if (!Variables.gadgetMap.containsKey(player.getName())) {
-                return;
-            }
-            Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-            if (player.getInventory().contains(gadget.getItemStack())) {
-                player.getInventory().remove(gadget.getItemStack());
-            }
-        }
-
-        @EventHandler
-        private void onKick(PlayerKickEvent e) {
-            Player player = e.getPlayer();
-            if (!Variables.gadgetMap.containsKey(player.getName())) {
-                return;
-            }
-            Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-            if (player.getInventory().contains(gadget.getItemStack())) {
-                player.getInventory().remove(gadget.getItemStack());
-            }
-        }
-
-        @EventHandler
-        private void onDeath(PlayerDeathEvent e) {
-            Player player = e.getEntity();
-            if (!Variables.gadgetMap.containsKey(player.getName())) {
-                return;
-            }
-            Gadget gadget = Variables.gadgetMap.getKey(player.getName());
-            if (e.getDrops().contains(gadget.getItemStack())) {
-                e.getDrops().remove(gadget.getItemStack());
-            }
-            if (player.getInventory().contains(gadget.getItemStack())) {
-                player.getInventory().remove(gadget.getItemStack());
-            }
-        }
-
-        @EventHandler
-        private void onDamage(EntityDamageByEntityEvent e) {
-            if (e.getDamager() instanceof Projectile) {
-                Projectile proj = (Projectile) e.getDamager();
-                if (proj.hasMetadata("GadgetProj")) {
-                    e.setCancelled(true);
-                }
-            }
-        }*/
+    protected void clearEntities () {
+        if (removableEntities.isEmpty()) return;
+        removableEntities.stream()
+                .filter(item -> getPlugin().getEntityUtils().isValid(item))
+                .forEach(Entity::remove);
+        removableEntities.clear();
     }
 }

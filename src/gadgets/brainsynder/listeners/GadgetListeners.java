@@ -8,6 +8,7 @@ import gadgets.brainsynder.api.gadget.Gadget;
 import gadgets.brainsynder.api.gadget.list.FireBender;
 import gadgets.brainsynder.api.gadget.list.Rocket;
 import gadgets.brainsynder.api.user.User;
+import gadgets.brainsynder.menus.GadgetSelector;
 import gadgets.brainsynder.utilities.Cooldown;
 import gadgets.brainsynder.utilities.EntityUtils;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -260,6 +262,25 @@ public class GadgetListeners implements Listener {
                     return;
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onClick (InventoryClickEvent e) {
+        if (e.getInventory().getHolder() == null) return;
+        if (e.getInventory().getHolder() instanceof GadgetSelector.Handler) return;
+
+        if (e.getCurrentItem() == null) return;
+        if (e.getCurrentItem().getType() == Material.AIR) return;
+
+        User user = plugin.getManager().getUser((Player) e.getWhoClicked());
+        if (!user.hasGadget()) return;
+
+        if (plugin.getUtilities().isSimilar(user.getGadget().getItem().build(), e.getCurrentItem())) {
+            e.setCancelled(true);
+            e.setResult(Event.Result.DENY);
+            e.setCurrentItem(new ItemStack(Material.AIR));
+            user.removeGadget();
         }
     }
 }

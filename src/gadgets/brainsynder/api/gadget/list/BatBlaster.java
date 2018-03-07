@@ -62,9 +62,7 @@ public class BatBlaster extends Gadget {
         new BukkitRunnable() {
             @Override
             public void run() {
-                removableEntities.stream().filter(bat -> getPlugin().getEntityUtils().isValid(bat))
-                        .forEach(Entity::remove);
-                removableEntities.clear();
+                clearEntities();
             }
         }.runTaskLater(getPlugin().getPlugin(), 59L);
     }

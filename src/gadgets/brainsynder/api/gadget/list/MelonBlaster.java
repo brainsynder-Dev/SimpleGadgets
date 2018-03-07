@@ -63,8 +63,7 @@ public class MelonBlaster extends Gadget {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        removableItems.stream().filter(item -> getPlugin().getEntityUtils().isValid(item))
-                                .forEach(Item::remove);
+                        clearItems();
                     }
                 }.runTaskLater(Core.get (), 20*20);
             }

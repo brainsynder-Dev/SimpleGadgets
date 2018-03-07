@@ -68,10 +68,7 @@ public class SheepBomb extends Gadget {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            removableItems.stream()
-                                    .filter(item -> getPlugin().getEntityUtils().isValid(item))
-                                    .forEach(Item::remove);
-                            removableItems.clear();
+                            clearItems();
                         }
                     }.runTaskLater(getPlugin ().getPlugin(), 20 * 3);
                     sheep.remove();

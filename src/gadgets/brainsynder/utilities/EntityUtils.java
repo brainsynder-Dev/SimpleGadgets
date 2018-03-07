@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -59,61 +58,23 @@ public class EntityUtils {
 
 
     // This section deals with the Item utilities
-    public void spawnRemovableItem(Location location, ItemStack itemstack, int time){
-        final Item item = location.getWorld().dropItem(location, itemstack);
-        item.setPickupDelay(Integer.MAX_VALUE);
-        item.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
-        new BukkitRunnable() {
-            @Override
-            public void run () {
-                item.remove();
-            }
-        }.runTaskLater(plugin.getPlugin(), time);
-    }
-
-    public void spawnRemovableItem(Location location, ItemStack itemstack, Vector vector, int time){
-        final Item item = location.getWorld().dropItem(location, itemstack);
-        item.setPickupDelay(Integer.MAX_VALUE);
-        item.setVelocity(vector);
-        item.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
-        new BukkitRunnable() {
-            @Override
-            public void run () {
-                item.remove();
-            }
-        }.runTaskLater(plugin.getPlugin(), time);
-    }
-
-    public List<Item> spawnItems (Location location, ItemStack itemstack, Vector vector, int amount){
-        List<Item>items = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            final Item item = location.getWorld().dropItem(location, itemstack);
-            item.setPickupDelay(Integer.MAX_VALUE);
-            item.setVelocity(vector);
-            item.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
-            items.add(item);
-        }
-        return items;
-    }
-
-    public List<Item> spawnItems (Location location, ItemStack itemstack, int amount){
-        List<Item>items = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            double x = -0.5F + (float)(Math.random() * 0.9D);
-            double y = 0.5D;
-            double z = -0.5F + (float)(Math.random() * 0.9D);
-            final Item item = location.getWorld().dropItem(location, itemstack);
-            item.setPickupDelay(Integer.MAX_VALUE);
-            item.setVelocity(new Vector (x, y, z));
-            item.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
-            items.add(item);
-        }
-        return items;
-    }
-
     public Item launchItem (LivingEntity entity, ItemStack itemStack) {
-        Item it = entity.getWorld().dropItem(entity.getEyeLocation(), itemStack);
-        it.setVelocity(entity.getEyeLocation().getDirection());
+        return launchItem(entity.getEyeLocation(), itemStack);
+    }
+    public Item launchItem (Location location, ItemStack itemStack) {
+        return launchItem(location, location.getDirection(), itemStack);
+    }
+    public Item launchItem (LivingEntity entity, Vector vector, ItemStack itemStack) {
+        return launchItem(entity.getEyeLocation(), vector, itemStack);
+    }
+    public Item launchItem (Location location, Vector vector, ItemStack itemStack) {
+        Item it = dropItem(location, itemStack);
+        it.setVelocity(vector);
+        return it;
+    }
+    public Item dropItem (Location location, ItemStack itemStack) {
+        Item it = location.getWorld().dropItem(location, itemStack);
+        it.setPickupDelay(Integer.MAX_VALUE);
         it.setMetadata("takeable", new FixedMetadataValue(plugin.getPlugin(), "takeable"));
         return it;
     }

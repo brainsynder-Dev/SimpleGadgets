@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -33,7 +34,7 @@ public class ItemBuilder {
     }
 
     public static ItemBuilder fromJSON (JSONObject json) {
-        if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing a material");
+        if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing speed material");
 
         int amount = 1;
         if (json.containsKey("amount")) amount = Integer.parseInt(String.valueOf(json.get("amount")));
@@ -123,6 +124,26 @@ public class ItemBuilder {
     public ItemBuilder withData(int data) {
         JSON.put("data", data);
         is.setDurability((short) data);
+        return this;
+    }
+
+    public ItemBuilder withData (MaterialData data) {
+        // Checks from the Bukkit API - Start
+        Material mat = is.getType();
+        if (data != null && mat != null && mat.getData() != null) {
+            if (data.getClass() != mat.getData() && data.getClass() != MaterialData.class) {
+                throw new IllegalArgumentException("Provided data is not of type " + mat.getData().getName() + ", found " + data.getClass().getName());
+            }
+
+            is.setData(data);
+        } else {
+            is.setData(data);
+        }
+        // Checks - end
+
+        JSON.put("material", data.getItemType());
+        JSON.put("data", data.getData()); // MaterialData#getData is depricated... but it is still in the 1.13 Bukkit API Preview
+
         return this;
     }
 
