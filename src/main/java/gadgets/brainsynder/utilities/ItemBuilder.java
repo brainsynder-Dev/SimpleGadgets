@@ -6,10 +6,12 @@ import com.mojang.authlib.properties.PropertyMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.material.MaterialData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,13 +35,13 @@ public class ItemBuilder {
     public ItemBuilder(Material material, int amount) {
         JSON = new JSONObject(new LinkedHashMap());
         JSON.put("material", material.name());
-        JSON.put("amount", amount);
+        if (amount != 1) JSON.put("amount", amount);
         this.is = new ItemStack(material, amount);
         this.im = is.getItemMeta();
     }
 
     public static ItemBuilder fromJSON (JSONObject json) {
-        if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing speed material");
+        if (!json.containsKey("material")) throw new NullPointerException("JSONObject seems to be missing the material");
 
         int amount = 1;
         if (json.containsKey("amount")) amount = Integer.parseInt(String.valueOf(json.get("amount")));
@@ -54,7 +56,7 @@ public class ItemBuilder {
         }
         if (json.containsKey("data")) builder.withData(Integer.parseInt(String.valueOf(json.get("data"))));
 
-        if (json.containsKey("enchants") && (!material.name().contains("SKULL"))) {
+        if (json.containsKey("enchants") && (material.name().contains("SKULL"))) {
             JSONArray array = (JSONArray) json.get("enchants");
             for (Object o : array) {
                 try {
@@ -73,6 +75,10 @@ public class ItemBuilder {
             }
         }
 
+        if (json.containsKey("entity")) {
+            builder.withEntity(EntityType.valueOf(String.valueOf(json.get("entity"))));
+        }
+
         if (json.containsKey("skullData")) {
             JSONObject skull = (JSONObject) json.get("skullData");
 
@@ -81,6 +87,10 @@ public class ItemBuilder {
         }
 
         return builder;
+    }
+
+    public ItemBuilder clone () {
+        return fromJSON(toJSON());
     }
 
     public ItemBuilder withName(String name) {
@@ -112,7 +122,7 @@ public class ItemBuilder {
     }
     public ItemBuilder clearLore() {
         if (JSON.containsKey("lore")) JSON.remove("lore");
-        im.getLore().clear();
+        if (im.hasLore()) im.getLore().clear();
         return this;
     }
     public ItemBuilder removeLore(String lore) {
@@ -164,9 +174,22 @@ public class ItemBuilder {
         if (JSON.containsKey("enchants")) ENCHANTS = (JSONArray) JSON.get("enchants");
         ENCHANTS.add(enchant.getName()+" ~~ "+level);
         JSON.put("enchants", ENCHANTS);
-        is.addEnchantment(enchant, level);
+        im.addEnchant(enchant, level, true);
         return this;
     }
+
+    public ItemBuilder withEntity(EntityType type) {
+        JSON.put("entity", type.name());
+
+        if (is.getType() == Material.MONSTER_EGG) {
+            SpawnEggMeta spawnEggMeta = (SpawnEggMeta) im;
+            spawnEggMeta.setSpawnedType(type);
+            im = spawnEggMeta;
+        }
+
+        return this;
+    }
+
     public ItemBuilder removeEnchant(Enchantment enchant) {
         if (JSON.containsKey("enchants")) {
             JSONArray ENCHANTS = (JSONArray) JSON.get("enchants");
@@ -237,7 +260,13 @@ public class ItemBuilder {
 
         if ((is.getType() == Material.SKULL_ITEM) && (is.getDurability() == 3)) {
             SkullMeta meta = (SkullMeta) im;
-            im = applyTextureToMeta(meta, createProfile(textureURL));
+
+            if (textureURL.length() > 17) {
+                im = applyTextureToMeta(meta, createProfile(textureURL));
+            }else{
+                meta.setOwner(textureURL);
+                im = meta;
+            }
         }
         return this;
     }
@@ -266,10 +295,18 @@ public class ItemBuilder {
                     SkullMeta mainSkullMeta = (SkullMeta) mainMeta;
                     SkullMeta checkSkullMeta = (SkullMeta) checkMeta;
 
-                    if (mainSkullMeta.hasOwner() && checkSkullMeta.hasOwner()) {
-                        values.add(mainSkullMeta.getOwner().equals(checkSkullMeta.getOwner()));
-                    }
-                    values.add(getTexture(getGameProfile(mainSkullMeta)).equals(getTexture(getGameProfile(checkSkullMeta))));
+                    try { // This is just to ignore any NPE errors that might happen if using regular skulls
+                        if (mainSkullMeta.hasOwner() && checkSkullMeta.hasOwner()) {
+                            values.add(mainSkullMeta.getOwner().equals(checkSkullMeta.getOwner()));
+                        }
+                        values.add(getTexture(getGameProfile(mainSkullMeta)).equals(getTexture(getGameProfile(checkSkullMeta))));
+                    }catch (Exception ignored) {}
+                }
+                if ((mainMeta instanceof SpawnEggMeta) && (checkMeta instanceof SpawnEggMeta)) {
+                    SpawnEggMeta mainSkullMeta = (SpawnEggMeta) mainMeta;
+                    SpawnEggMeta checkSkullMeta = (SpawnEggMeta) checkMeta;
+
+                    values.add(mainSkullMeta.getSpawnedType() == (checkSkullMeta.getSpawnedType()));
                 }
 
                 if (!values.isEmpty()) return !values.contains(false);

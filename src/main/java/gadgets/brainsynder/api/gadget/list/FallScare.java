@@ -87,6 +87,6 @@ public class FallScare extends BlockChanger {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.PUMPKIN, 1).withName("&eFall Scare");
+        return new ItemBuilder(Material.SKULL_ITEM).withData(3).setTexture("http://textures.minecraft.net/texture/fec415d702f3292a82f1471c8794cf63122d449d28ab886d4dc58fafd66").withName("&eFall Scare");
     }
 }

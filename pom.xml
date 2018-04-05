@@ -33,7 +33,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <abbrevLength>5</abbrevLength>
                     <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
                 </configuration>
             </plugin>

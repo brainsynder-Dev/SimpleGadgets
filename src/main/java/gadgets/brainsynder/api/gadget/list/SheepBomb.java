@@ -80,11 +80,11 @@ public class SheepBomb extends Gadget {
                 if(red) {
                     sheep.setColor(DyeColor.RED);
                     new ParticleMaker(ParticleMaker.Particle.REDSTONE, 10, 0.5)
-                            .sendToLocation(sheep.getLocation());
+                            .sendToLocation(sheep.getLocation().add(0, 0.4, 0));
                 } else {
                     sheep.setColor(DyeColor.WHITE);
                     new ParticleMaker(ParticleMaker.Particle.SPELL_INSTANT, 10, 0.5)
-                            .sendToLocation(sheep.getLocation());
+                            .sendToLocation(sheep.getLocation().add(0, 0.4, 0));
                 }
                 SoundMaker.BLOCK_METAL_PRESSUREPLATE_CLICK_ON.playSound(sheep.getLocation());
 

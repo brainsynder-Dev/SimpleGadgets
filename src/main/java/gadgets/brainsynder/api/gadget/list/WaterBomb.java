@@ -10,7 +10,6 @@ import org.bukkit.World;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,7 +26,10 @@ public class WaterBomb extends Gadget {
     public void run(User user) {
         Player player = user.getPlayer();
 
-        Item bukkit = getPlugin().getEntityUtils().launchItem(player, new ItemStack(Material.WATER_BUCKET));
+        ItemBuilder builder = new ItemBuilder(Material.SKULL_ITEM).withData(3)
+                .setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJkMDU2ZThmYzVhNTBkYWQxNzRjYzc4ZjU1ZmQwODBiMjk0Y2QyMmUwN2MxMzQ3OTAyMDVjOGY0YWJhZWMyYiJ9fX0=")
+                .withName(""+Math.random());
+        Item bukkit = getPlugin().getEntityUtils().launchItem(player, builder.build());
         bukkit.setPickupDelay(Integer.MAX_VALUE);
         new BukkitRunnable() {
             @Override
@@ -59,6 +61,8 @@ public class WaterBomb extends Gadget {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.WATER_BUCKET).withName("&eWater Bomb");
+        return new ItemBuilder(Material.SKULL_ITEM).withData(3)
+                .setTexture("http://textures.minecraft.net/texture/e6799bfaa3a2c63ad85dd378e66d57d9a97a3f86d0d9f683c498632f4f5c")
+                .withName("&eWater Bomb");
     }
 }

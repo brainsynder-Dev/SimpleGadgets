@@ -38,7 +38,7 @@ public abstract class Gadget extends JSONFile {
 
     public void load () {
         _COOLDOWN_ = getInteger("cooldown");
-        _ENABLED_ = getBoolean("enabled");
+        _ENABLED_ = Boolean.valueOf(getString("enabled", false));
         _PERMISSION_ = getString("permission", false);
         _NAME_ = getString("name", false);
         _BUILDER_ = ItemBuilder.fromJSON(getObject("item"));

@@ -61,6 +61,6 @@ public class PaintTrail extends BlockChanger {
 
     @Override
     public ItemBuilder getDefaultItem() {
-        return new ItemBuilder(Material.INK_SACK).withData(14).withName("&ePaint Trail");
+        return new ItemBuilder(Material.SKULL_ITEM).withData(3).setTexture("http://textures.minecraft.net/texture/f72b5cf4fb2e3d9158a4f5ece714970bcc1371ca029e645555927fd156e184").withName("&ePaint Trail");
     }
 }

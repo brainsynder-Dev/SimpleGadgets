@@ -9,9 +9,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import simple.brainsynder.api.ParticleMaker;
-import simple.brainsynder.api.SkullMaker;
 import simple.brainsynder.sound.SoundMaker;
-import simple.brainsynder.utils.StringAPI;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,8 +46,7 @@ public class BirthdayCannon extends Gadget {
                     return;
                 }
 
-                StringAPI texture = new StringAPI(textures.get(i));
-                Item item = getPlugin().getEntityUtils().launchItem(player, new SkullMaker().setUrl(texture.toSkinURL()).setName("" + Math.random()).create());
+                Item item = getPlugin().getEntityUtils().launchItem(player, new ItemBuilder(Material.SKULL_ITEM).withData(3).setTexture(textures.get(i)).withName("" + Math.random()).build());
                 removableItems.add(item);
                 SoundMaker.ENTITY_EXPERIENCE_ORB_PICKUP.playSound(player.getLocation());
                 new BukkitRunnable() {
