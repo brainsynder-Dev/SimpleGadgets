@@ -35,13 +35,12 @@ public class GadgetManager {
 
         String gadgetName = WordUtils.capitalizeFully(gadget.getIdName().replace("_", " "));
         gadget.loadExtraTags();
-        gadget.setDefault ("enabled", true);
+        gadget.setDefault ("enabled", "true");
         gadget.setDefault ("name", gadgetName);
         gadget.setDefault ("cooldown", 10);
         gadget.setDefault ("item", gadget.getDefaultItem().toJSON());
         gadget.setDefault ("permission", "SimpleGadgets.gadget." + gadgetName.replace(" ", ""));
         gadget.save();
-        gadget.reload();
         gadget.load();
         if (gadget.isEnabled()) {
             core.getPages().add(gadget);
@@ -72,7 +71,7 @@ public class GadgetManager {
 
     public Gadget getByItem(ItemStack item, boolean newInstance) {
         for (Gadget gadget : byName.values()) {
-            if (core.getUtilities().isSimilar(gadget.getItem().build(), item)) {
+            if (gadget.getItem().isSimilar(item)) {
                 if (newInstance) {
                     try {
                         return gadget.getClass().getConstructor(GadgetPlugin.class).newInstance(core);
