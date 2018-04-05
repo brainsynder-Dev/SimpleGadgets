@@ -140,6 +140,15 @@ public class BlockUtils {
         }
     }
 
+    private boolean isBlockNear (Block block, Material target) {
+        if (block.getRelative(BlockFace.DOWN).getType() == target) return true;
+        if (block.getRelative(BlockFace.EAST).getType() == target) return true;
+        if (block.getRelative(BlockFace.NORTH).getType() == target) return true;
+        if (block.getRelative(BlockFace.SOUTH).getType() == target) return true;
+        if (block.getRelative(BlockFace.UP).getType() == target) return true;
+        return block.getRelative(BlockFace.WEST).getType() == target;
+    }
+
     public boolean isNotBreakableOnChange(Block b) {
         if ((b.getType() == Material.YELLOW_FLOWER
                 || b.getType() == Material.RED_ROSE
@@ -311,7 +320,11 @@ public class BlockUtils {
                 blockedblocks.add(Material.STONE_PLATE);
                 blockedblocks.add(Material.IRON_PLATE);
                 blockedblocks.add(Material.GOLD_PLATE);
+                blockedblocks.add(Material.OBSERVER);
+                blockedblocks.add(Material.REDSTONE_BLOCK);
             }
+
+
             return !blockedblocks.contains(b.getType())
                     && !b.getType().toString().toLowerCase().contains("door")
                     && b.getType() != Material.BED
@@ -319,6 +332,9 @@ public class BlockUtils {
                     && !b.getType().toString().toLowerCase().contains("lever")
                     && !b.getType().toString().toLowerCase().contains("pressure_plate")
                     && !b.getType().toString().toLowerCase().contains("farm")
+                    && !b.getType().toString().toLowerCase().contains("banner")
+                    && !b.getType().toString().toLowerCase().contains("piston")
+                    && !isBlockNear(b, Material.OBSERVER)
                     && !b.hasMetadata("NoBlockBreak")
                     && b.getType().isSolid()
                     && isNotBreakableOnChange(b)
