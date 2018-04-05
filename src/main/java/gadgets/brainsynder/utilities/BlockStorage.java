@@ -34,7 +34,7 @@ public class BlockStorage {
     public void reset() {
         if (compoundList.isEmpty()) return;
         compoundList.values().forEach(info -> {
-            if (locationStorage.contains(info.getLocation().toDataString())) locationStorage.remove(info.getLocation().toDataString());
+            locationStorage.remove(info.getLocation().toDataString());
             //info.placeOriginal();
             info.getState().update(true);
         });
@@ -47,7 +47,7 @@ public class BlockStorage {
         if (!contains(block)) return;
         BlockInfo save = getBlockInfo(block);
         save.getState().update(true);
-        if (locationStorage.contains(save.getLocation().toDataString())) locationStorage.remove(save.getLocation().toDataString());
+        locationStorage.remove(save.getLocation().toDataString());
         compoundList.remove(save.getLocation().toDataString());
     }
 }

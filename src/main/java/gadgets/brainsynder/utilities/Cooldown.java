@@ -46,9 +46,7 @@ public class Cooldown {
             if (cooldownMap.containsKey (p.getName ()) && gadgetMap.containsKey (p.getName ())) {
                 if (gadget.getIdName ().equals (gadgetMap.getKey (p.getName ()).getIdName ())) {
                     long secondsLeft = cooldownMap.getKey (p.getName ()) / 1000L + cooldown - System.currentTimeMillis () / 1000L;
-                    if (secondsLeft > 0L) {
-                        return true;
-                    }
+                    return secondsLeft > 0L;
                 }
             }
             return false;

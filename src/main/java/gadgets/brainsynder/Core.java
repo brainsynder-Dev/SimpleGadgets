@@ -78,7 +78,7 @@ public class Core extends JavaPlugin implements GadgetPlugin {
             return;
         }
         double ver = Double.parseDouble(plugin.getDescription().getVersion());
-        if (ver < 3.1) {
+        if (ver < 3.7) {
             System.out.println("SimpleGadgets >> Notice: Your Version of SimpleAPI is not the required version, Please update SimpleAPI https://www.spigotmc.org/resources/24671/");
         }
         SpigotPluginHandler spigotPluginHandler = new SpigotPluginHandler(this, 22728, SpigotPluginHandler.MetricType.BSTATS);

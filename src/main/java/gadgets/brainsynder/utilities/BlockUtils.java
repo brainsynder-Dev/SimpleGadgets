@@ -312,7 +312,7 @@ public class BlockUtils {
                 blockedblocks.add(Material.IRON_PLATE);
                 blockedblocks.add(Material.GOLD_PLATE);
             }
-            if (!blockedblocks.contains(b.getType())
+            return !blockedblocks.contains(b.getType())
                     && !b.getType().toString().toLowerCase().contains("door")
                     && b.getType() != Material.BED
                     && !b.getType().toString().toLowerCase().contains("button")
@@ -322,9 +322,7 @@ public class BlockUtils {
                     && !b.hasMetadata("NoBlockBreak")
                     && b.getType().isSolid()
                     && isNotBreakableOnChange(b)
-                    && !blocksToRestore.containsKey(b.getLocation())) {
-                return true;
-            }
+                    && !blocksToRestore.containsKey(b.getLocation());
         }
         return false;
     }

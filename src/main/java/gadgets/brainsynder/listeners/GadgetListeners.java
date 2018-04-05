@@ -205,9 +205,7 @@ public class GadgetListeners implements Listener {
         if (!user.hasGadget()) return;
 
         Gadget gadget = user.getGadget();
-        if (e.getDrops().contains(gadget.getItem().build())) {
-            e.getDrops().remove(gadget.getItem().build());
-        }
+        e.getDrops().remove(gadget.getItem().build());
         user.removeGadget();
     }
 
