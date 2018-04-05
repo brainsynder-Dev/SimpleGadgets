@@ -198,6 +198,17 @@ public class GadgetListeners implements Listener {
     }
 
     @EventHandler
+    private void onJoin(PlayerJoinEvent e) {
+        for(Gadget gadget : plugin.getManager().getGadgetList()) {
+            ItemStack item = gadget.getItem().build();
+            if (e.getPlayer().getInventory().contains(item)) {
+                e.getPlayer().getInventory().remove(item);
+            }
+        }
+        plugin.getManager().getUser(e.getPlayer()).removeGadget();
+    }
+
+    @EventHandler
     private void onDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
 

@@ -26,6 +26,10 @@ public class User {
     }
 
     public boolean hasGadget () {
+        if (gadget != null) {
+            if (!player.getInventory().contains(gadget.getItem().build())) return false;
+        }
+
         return (gadget != null);
     }
 
