@@ -7,9 +7,18 @@ import gadgets.brainsynder.utilities.ItemBuilder;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import simple.brainsynder.api.ParticleMaker;
+import simple.brainsynder.math.MathUtils;
 import simple.brainsynder.sound.SoundMaker;
+
+import java.util.List;
 
 public class Laser extends Gadget {
     public Laser(GadgetPlugin plugin) {
@@ -19,16 +28,17 @@ public class Laser extends Gadget {
     @Override
     public void loadExtraTags() {
         super.loadExtraTags();
-        setDefault("LaunchMobs", true);
+        setDefault("LaunchBlocks", "true");
         setDefault("length", 100);
+        setDefault("radius", 3);
     }
 
     @Override
     public void run(User user) {
-        laserbeam(user.getPlayer(), Color.RED, getInteger("length"), getBoolean("LaunchMobs"));
+        laserbeam(user.getPlayer(), Color.RED, getInteger("length"), Boolean.valueOf(getString("LaunchBlocks", false)));
     }
 
-    private void laserbeam(LivingEntity user, Color color, int length, boolean pushMobs) {
+    private void laserbeam(LivingEntity user, Color color, int length, boolean launchBlocks) {
         Location start = getPlugin().getUtilities().getEyeLocation(user);
         SoundMaker.ENTITY_GENERIC_EXPLODE.playSound(start, 0.5F, 0.5F);
         Location end = getPlugin().getUtilities().getTargetLocation(user);
@@ -44,13 +54,30 @@ public class Laser extends Gadget {
                 maker.sendToLocation(l);
                 SoundMaker.ENTITY_GENERIC_EXPLODE.playSound(l);
 
-                if (pushMobs) {
-                    for (LivingEntity entity : start.getWorld().getLivingEntities()) {
-                        //if ((entity != user) && (!entity.hasMetadata("NPC"))) {
-                            if (l.distanceSquared(entity.getLocation()) <= 5) {
-                                getPlugin().getUtilities().pushEntity(entity, l);
+                if (launchBlocks) {
+                    List<Block> blocks = getPlugin().getBlockUtils().getBlocksInRadius(l, getInteger("radius"), false);
+                    for (Block block : blocks) {
+                        if ((block.getRelative(BlockFace.UP) == null) || (block.getRelative(BlockFace.UP).getType() == Material.AIR)) {
+                            if (block.getLocation().getBlockY() == block.getLocation().getBlockY()) {
+                                FallingBlock falling = user.getWorld().spawnFallingBlock(block.getLocation().add(0, 2, 0), block.getState().getData());
+                                falling.setDropItem(false);
+                                falling.setMetadata("GadgetFB", new FixedMetadataValue(getPlugin().getPlugin(), "GadgetFB"));
+                                removableEntities.add(falling);
+                                if (!getPlugin().getEntityUtils().isValid(falling)) return;
+
+                                double velX = MathUtils.random(0.8f, -0.8f);
+                                double velY = MathUtils.random(1f, 0.5f);
+                                double velZ = MathUtils.random(0.8f, -0.8f);
+                                MathUtils.applyVelocity(falling, new Vector(velX, velY, velZ));
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        if (getPlugin().getEntityUtils().isValid(falling))
+                                            falling.remove();
+                                    }
+                                }.runTaskLater(getPlugin().getPlugin(), 20);
                             }
-                        //}
+                        }
                     }
                 }
                 break;
